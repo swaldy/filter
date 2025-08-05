@@ -37,7 +37,7 @@ def loadParquetData(
     # load the labels and data
     inFilePaths = list(sorted(glob.glob(os.path.join(inFilePath, "labels*")))) 
     trainlabels, trainrecons = [], []
-    for inFiles in tqdm(inFilePaths[:4]):
+    for inFiles in tqdm(inFilePaths):
         trainlabels.append(pd.read_parquet(inFiles))
         temp = pd.read_parquet(inFiles.replace("labels", "recon2D"))
         temp = quantize_manual(temp, charge_levels=qm_charge_levels, quant_values=qm_quant_values)
