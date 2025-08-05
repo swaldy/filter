@@ -138,3 +138,68 @@ def prepareWeights(path):
         writer.writerow(b5_w5_b2_w2_pixel_list)
     
     return csv_file
+
+# convert yprofiles to the pixel programming for asic
+def input_to_pixelout(x):
+    N_INFERENCES = x.shape[0]
+
+    # first create compout
+    encoder_values_Ninferences = []
+    for i in range(N_INFERENCES):
+        encoder_values = []
+        for j in range(16):
+            a = x[i][j]
+            encoder_sum = []
+            if(a==0):
+                encoder_sum = [0 for _ in range(16)]
+                encoder_sum.reverse()
+                
+            elif(a==1):
+                encoder_sum = [1]+[0 for _ in range(15)]
+                encoder_sum.reverse()
+
+            elif(a==2):
+                encoder_sum = [2]+[0 for _ in range(15)]
+                encoder_sum.reverse()
+
+            elif(a==3):
+                encoder_sum = [3]+[0 for _ in range(15)]
+                encoder_sum.reverse()
+
+            else:
+                l3=[]
+                if a%3 == 0:
+                    result = int(a/3)
+                    l3 = [3 for _ in range(result)]
+                    l_diff = 16-len(l3)
+                    encoder_sum = l3 + [0 for _ in range(l_diff)]
+                    encoder_sum.reverse()
+                else:
+                    result = int(a//3)
+                    l3 = [3 for _ in range(result)]
+                    diff = a-sum(l3)
+                    l3.append(diff)
+                    l_diff = 16-len(l3)
+                    encoder_sum = l3 + [0 for _ in range(l_diff)]
+                    encoder_sum.reverse()
+
+            encoder_values.append(encoder_sum)
+        encoder_values = [j for i in encoder_values for j in i]
+        encoder_values_Ninferences.append(encoder_values)
+        
+    compout_values_Ninferences = []
+    for i in range(N_INFERENCES):
+        compout_values = []
+        for j in range(256):
+            a = encoder_values_Ninferences[i][j]
+            if(a==3):
+                compout_values.append(7)
+            elif(a==2):
+                compout_values.append(3)
+            elif(a==1):
+                compout_values.append(1)
+            else:
+                compout_values.append(0)
+        compout_values_Ninferences.append(compout_values)
+
+    return compout_values_Ninferences
