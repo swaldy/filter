@@ -130,17 +130,19 @@ def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./"):
     filtered_ylocals = ylocals[mask]
     print(f"Number of samples chosen after filter: {mask.sum()}/{mask.shape[0]} ({mask.sum()/mask.shape[0]*100:.2f}%)")
 
-    # create compout of y-local subset
-    compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min}_{ylocal_max}.csv')
-    yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
-
     # create output dictionary
     outDict = {
         "yprofiles": filtered_yprofiles,
         "clslabels": filtered_clslabels,
         "ylocals": filtered_ylocals,
-        "compout_file_name": compout_file_name
     }
+
+    # create compout of y-local subset
+    if outDir is not None:
+        compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min}_{ylocal_max}.csv')
+        yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
+        outDict["compout_file_name"] = compout_file_name
+
     return outDict
 
 # Generate a simple configuration from keras model
