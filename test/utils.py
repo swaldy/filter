@@ -32,61 +32,116 @@ def loadParquetData(
     threshold = 0.2, # pt threshold in GeV for high pT particle
     qm_charge_levels = [400, 1600, 2400], # quantize manual charge levels
     qm_quant_values = [0, 1, 2, 3], # quantize manual quant values
+    outDir = None, # output directory for the csv files
 ):
     
     # load the labels and data
     inFilePaths = list(sorted(glob.glob(os.path.join(inFilePath, "labels*")))) 
-    trainlabels, trainrecons = [], []
-    for inFiles in tqdm(inFilePaths):
-        trainlabels.append(pd.read_parquet(inFiles))
-        temp = pd.read_parquet(inFiles.replace("labels", "recon2D"))
+    clslabels, pts, ylocals, trainrecons = [], [], [], []
+    for inFile in tqdm(inFilePaths):
+
+        # load the labels
+        label = pd.read_parquet(inFile)
+        pt = label['pt'].values
+        clslabel = np.full_like(pt, fill_value=-999, dtype=int)
+        clslabel[np.abs(pt) > threshold] = 0
+        clslabel[(pt < 0) & (pt >= -1 * threshold)] = 1 # -1*threshold<=row2['pt']<0
+        clslabel[(pt >= 0) & (pt <= threshold)] = 2
+        # save
+        clslabels.append(clslabel)
+        pts.append(pt)
+        ylocals.append(label["y-local"].values)
+
+        # load the data
+        temp = pd.read_parquet(inFile.replace("labels", "recon2D"))
         temp = quantize_manual(temp, charge_levels=qm_charge_levels, quant_values=qm_quant_values)
         trainrecons.append(temp)
 
+    # concatenate the labels
+    clslabels = np.concatenate(clslabels, axis=0)
+    pts = np.concatenate(pts, axis=0)
+    ylocals = np.concatenate(ylocals, axis=0)
+    print(clslabels.shape, pts.shape, ylocals.shape)
+
     # convert to csv
-    trainlabels_csv = pd.concat(trainlabels, ignore_index=True)
     trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
-    print(len(trainlabels_csv), len(trainrecons_csv))
+    print(len(trainrecons_csv))
 
-    # function to sum over the x rows to create the y-profile
-    def sumRow(X):
+    # Vectorized sumRow function for all rows
+    def sumRow_vectorized(X):
         X = np.where(X < noise_threshold, 0, X)
-        sum1 = 0
-        sumList = []
-        for i in X:
-            sum1 = np.sum(i,axis=0)
-            sumList.append(sum1)
-            b = np.array(sumList)
-        return b
-    
-    # create the trainlist1 = yprofiles, trainlist2 = y-local, cls, pt
+        # X shape: (num_samples, 273)
+        X_reshaped = X.reshape(-1, 13, 21)
+        return np.sum(X_reshaped, axis=2)  # shape: (num_samples, 13)
+
     print("Creating yprofiles")
-    yprofiles, ylocals, clslabels = [], [], []
-    for (index1, row1), (index2, row2) in zip(trainrecons_csv.iterrows(), trainlabels_csv.iterrows()):
-        rowSum = 0.0
-        X = row1.values
-        X = np.reshape(X,(13,21))
-        rowSum = sumRow(X)
-        yprofiles.append(rowSum) 
-        cls = -1
-        if(abs(row2['pt'])>threshold):
-            cls=0
-        elif(-1*threshold<=row2['pt']<0):
-            cls=1
-        elif(0<=row2['pt']<=threshold):
-            cls=2
-        ylocals.append(row2["y-local"])
-        clslabels.append(cls)
-
-    # create numpys
+    
+    # Convert DataFrames to numpy arrays for vectorized operations
+    trainrecons_np = trainrecons_csv.values  # shape: (num_samples, 273)
+    # Compute yprofiles in a vectorized way
+    yprofiles = sumRow_vectorized(trainrecons_np)
+    # convert to numpy
     yprofiles = np.array(yprofiles)
-    ylocals = np.array(ylocals)
-    clslabels = np.array(clslabels)
-
     # pad the yprofiles to get to 16 dimension
     yprofiles = np.pad(yprofiles, ((0, 0), (0, 3)), mode='constant', constant_values=0)
 
-    return yprofiles, ylocals, clslabels
+    # save 
+    if outDir is not None:
+        outDir = os.path.join(outDir, "_".join(map(str, qm_charge_levels)))
+        os.makedirs(outDir, exist_ok=True)
+        # save with np.save and include the quantization parameters in the name
+        np.save(os.path.join(outDir, 'yprofiles.npy'), yprofiles)
+        np.save(os.path.join(outDir, 'ylocals.npy'), ylocals)
+        np.save(os.path.join(outDir, 'clslabels.npy'), clslabels)
+        np.save(os.path.join(outDir, 'pts.npy'), pts)
+
+    # output dictionary
+    outDict = {
+        "yprofiles": yprofiles,
+        "ylocals": ylocals,
+        "clslabels": clslabels,
+        "pts": pts,
+        "outDir": outDir
+    }
+    return outDict
+
+
+# convert yprofiles to the pixel programming for asic
+def yprofileToCompoutWrite(yprofiles, csv_file_name):
+    # create compout of y-local subset
+    print("Making compout of y-local subset")
+    filtered_pixelout = input_to_pixelout(yprofiles)
+    with open(csv_file_name, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(filtered_pixelout)
+    print("   done!")
+
+# get the y-local bin from the yprofiles, clslabels and ylocals
+def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./"):
+    
+    bin_width = (8.1 - (-8.1))/12 # 12 bins from -8.1 to 8.1, as chosen in Jiuen's paper
+    bin_number = 0 # Giuseppe seems to have chosen the 0th bin to produce the test-vectors from dataset 8 (https://github.com/GiuseppeDiGuglielmo/directional-pixel-detectors/blob/asic-flow/multiclassifier/train.ipynb)
+    ylocal_min = -8.1 + bin_number* bin_width
+    ylocal_max = ylocal_min + bin_width
+    interested_range = (ylocal_min, ylocal_max) # the range of y-local values we are interested in passing to the NN
+    mask = (ylocals >= interested_range[0]) & (ylocals < interested_range[1])
+    filtered_yprofiles = yprofiles[mask]
+    filtered_clslabels = clslabels[mask]
+    filtered_ylocals = ylocals[mask]
+    print(f"Number of samples chosen after filter: {mask.sum()}/{mask.shape[0]} ({mask.sum()/mask.shape[0]*100:.2f}%)")
+
+    # create compout of y-local subset
+    compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min}_{ylocal_max}.csv')
+    yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
+
+    # create output dictionary
+    outDict = {
+        "yprofiles": filtered_yprofiles,
+        "clslabels": filtered_clslabels,
+        "ylocals": filtered_ylocals,
+        "compout_file_name": compout_file_name
+    }
+    return outDict
 
 # Generate a simple configuration from keras model
 def gen_hls_model(model, output_dir="newModelWeights"):
