@@ -43,6 +43,7 @@ def loadParquetData(
         # load the labels
         label = pd.read_parquet(inFile)
         pt = label['pt'].values
+        ylocal = label['y-local'].values
         clslabel = np.full_like(pt, fill_value=-999, dtype=int)
         clslabel[np.abs(pt) > threshold] = 0
         clslabel[(pt < 0) & (pt >= -1 * threshold)] = 1 # -1*threshold<=row2['pt']<0
@@ -50,11 +51,11 @@ def loadParquetData(
         # save
         clslabels.append(clslabel)
         pts.append(pt)
-        ylocals.append(label["y-local"].values)
+        ylocals.append(ylocal)
 
         # load the data
         temp = pd.read_parquet(inFile.replace("labels", "recon2D"))
-        temp = quantize_manual(temp, charge_levels=qm_charge_levels, quant_values=qm_quant_values)
+        temp = quantize_manual(temp, charge_levels=qm_charge_levels, quant_values=qm_quant_values, shuffled=True)
         trainrecons.append(temp)
 
     # concatenate the labels
@@ -72,12 +73,14 @@ def loadParquetData(
         X = np.where(X < noise_threshold, 0, X)
         # X shape: (num_samples, 273)
         X_reshaped = X.reshape(-1, 13, 21)
-        return np.sum(X_reshaped, axis=2)  # shape: (num_samples, 13)
+        X_reshaped = np.sum(X_reshaped, axis=2)
+        return X_reshaped  # shape: (num_samples, 13)
 
     print("Creating yprofiles")
     
     # Convert DataFrames to numpy arrays for vectorized operations
     trainrecons_np = trainrecons_csv.values  # shape: (num_samples, 273)
+
     # Compute yprofiles in a vectorized way
     yprofiles = sumRow_vectorized(trainrecons_np)
     # convert to numpy
