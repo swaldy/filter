@@ -120,14 +120,14 @@ def yprofileToCompoutWrite(yprofiles, csv_file_name):
     print("   done!")
 
 # get the y-local bin from the yprofiles, clslabels and ylocals
-def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./"):
+# Giuseppe seems to have chosen the 0th bin (corresponding to bin_number=6) to produce the test-vectors from dataset 8 (https://github.com/GiuseppeDiGuglielmo/directional-pixel-detectors/blob/asic-flow/multiclassifier/train.ipynb)
+def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(-8.1, 8.1, 13), bin_number=6):
     
-    bin_width = (8.1 - (-8.1))/12 # 12 bins from -8.1 to 8.1, as chosen in Jiuen's paper
-    bin_number = 0 # Giuseppe seems to have chosen the 0th bin to produce the test-vectors from dataset 8 (https://github.com/GiuseppeDiGuglielmo/directional-pixel-detectors/blob/asic-flow/multiclassifier/train.ipynb)
-    ylocal_min = -8.1 + bin_number* bin_width
-    ylocal_max = ylocal_min + bin_width
-    interested_range = (ylocal_min, ylocal_max) # the range of y-local values we are interested in passing to the NN
-    mask = (ylocals >= interested_range[0]) & (ylocals < interested_range[1])
+    # pick up the ylocal min, max and interested range
+    ylocal_min = bins[bin_number]
+    ylocal_max = bins[bin_number + 1]
+    mask = (ylocals >= ylocal_min) & (ylocals < ylocal_max)
+    # pick up just those values
     filtered_yprofiles = yprofiles[mask]
     filtered_clslabels = clslabels[mask]
     filtered_ylocals = ylocals[mask]
@@ -142,7 +142,7 @@ def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./"):
 
     # create compout of y-local subset
     if outDir is not None:
-        compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min}_{ylocal_max}.csv')
+        compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min:.2f}_{ylocal_max:.2f}.csv')
         yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
         outDict["compout_file_name"] = compout_file_name
 
