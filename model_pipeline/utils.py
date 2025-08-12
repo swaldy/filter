@@ -10,7 +10,8 @@ try:
     from tqdm import tqdm
 
     # custom imports
-    sys.path.append(os.path.join(os.path.dirname(__file__), 'pretrain-data-prep')) # https://github.com/smart-pix/pretrain-data-prep/tree/main
+    sys.path.insert(1, '../pretrain-data-prep/')
+    # sys.path.append(os.path.join(os.path.dirname(__file__), 'pretrain-data-prep')) # https://github.com/smart-pix/pretrain-data-prep/tree/main
     from dataset_utils import quantize_manual
 
 except:
