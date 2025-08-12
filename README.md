@@ -17,6 +17,11 @@ One will also require functions from the pretrain-data-prep repository from smar
 ```
 git clone --recursive https://github.com/smart-pix/filter.git
 cd filter
+git submodule foreach --recursive 'if git show-ref --verify --quiet refs/heads/main; then git checkout main; elif git show-ref --verify --quiet refs/heads/master; then git checkout master; else echo "Neither main nor master branch exists"; fi'
+git submodule foreach --recursive git pull
+```
+After encountering instances where the submodules don't properly install, one can try the following as an alternative to manually add the submodules within the filter directory:
+```
 git submodule add https://github.com/smart-pix/pretrain-data-prep.git
 git submodule update --init --recursive
 ```
