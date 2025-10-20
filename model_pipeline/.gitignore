@@ -1,6 +1,7 @@
 *.pdf
 *.pyc
 tmp*/*
+tmp*.gz
 
 # train/test data production and model related
 dataset_*

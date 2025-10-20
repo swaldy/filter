@@ -137,10 +137,11 @@ def loadParquetData(
 
 
 # convert yprofiles to the pixel programming for asic
-def yprofileToCompoutWrite(yprofiles, csv_file_name):
+def yprofileToCompoutWrite(yprofiles, csv_file_name, flip=True):
     # create compout of y-local subset
     print("Making compout of y-local subset")
-    filtered_pixelout = input_to_pixelout(yprofiles)
+    print("   writing to file:", csv_file_name,)
+    filtered_pixelout = input_to_pixelout(yprofiles, flip)
     with open(csv_file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(filtered_pixelout)
@@ -148,7 +149,7 @@ def yprofileToCompoutWrite(yprofiles, csv_file_name):
 
 # get the y-local bin from the yprofiles, clslabels and ylocals
 # Giuseppe seems to have chosen the 0th bin (corresponding to bin_number=6) to produce the test-vectors from dataset 8 (https://github.com/GiuseppeDiGuglielmo/directional-pixel-detectors/blob/asic-flow/multiclassifier/train.ipynb)
-def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(-8.1, 8.1, 13), bin_number=6):
+def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(-8.1, 8.1, 13), bin_number=6, flip=True):
     
     # pick up the ylocal min, max and interested range
     ylocal_min = bins[bin_number]
@@ -170,7 +171,7 @@ def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(
     # create compout of y-local subset
     if outDir is not None:
         compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min:.2f}_{ylocal_max:.2f}.csv')
-        yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
+        yprofileToCompoutWrite(filtered_yprofiles, compout_file_name, flip)
         outDict["compout_file_name"] = compout_file_name
 
     return outDict
@@ -227,7 +228,7 @@ def prepareWeights(path):
     return csv_file
 
 # convert yprofiles to the pixel programming for asic
-def input_to_pixelout(x):
+def input_to_pixelout(x, flip):
     N_INFERENCES = x.shape[0]
 
     # first create compout
@@ -239,19 +240,23 @@ def input_to_pixelout(x):
             encoder_sum = []
             if(a==0):
                 encoder_sum = [0 for _ in range(16)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
                 
             elif(a==1):
                 encoder_sum = [1]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             elif(a==2):
                 encoder_sum = [2]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             elif(a==3):
                 encoder_sum = [3]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             else:
                 l3=[]
@@ -260,7 +265,8 @@ def input_to_pixelout(x):
                     l3 = [3 for _ in range(result)]
                     l_diff = 16-len(l3)
                     encoder_sum = l3 + [0 for _ in range(l_diff)]
-                    encoder_sum.reverse()
+                    if flip:
+                        encoder_sum.reverse()
                 else:
                     result = int(a//3)
                     l3 = [3 for _ in range(result)]
@@ -268,7 +274,8 @@ def input_to_pixelout(x):
                     l3.append(diff)
                     l_diff = 16-len(l3)
                     encoder_sum = l3 + [0 for _ in range(l_diff)]
-                    encoder_sum.reverse()
+                    if flip:
+                        encoder_sum.reverse()
 
             encoder_values.append(encoder_sum)
         encoder_values = [j for i in encoder_values for j in i]
