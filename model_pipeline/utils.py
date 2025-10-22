@@ -12,7 +12,7 @@ try:
     # custom imports
     sys.path.insert(1, '../pretrain-data-prep/')
     # sys.path.append(os.path.join(os.path.dirname(__file__), 'pretrain-data-prep')) # https://github.com/smart-pix/pretrain-data-prep/tree/main
-    from dataset_utils import quantize_manual
+    from dataset_utils import quantize_manual, add_noise
 
 except:
     print("Import error:", f"{__file__}: {str(e)}")
@@ -30,12 +30,19 @@ def loadExampleTestVectors():
 def loadParquetData(
     inFilePath="data/", # in path where the labels, recon2D files sit
     noise_threshold = 0, # thresholds on the number of electrons
+    zero_pad = True, # zero pad the 13x21 to 16x21
     threshold = 0.2, # pt threshold in GeV for high pT particle
     qm_charge_levels = [400, 1600, 2400], # quantize manual charge levels
     qm_quant_values = [0, 1, 2, 3], # quantize manual quant values
     outDir = None, # output directory for the csv files
 ):
-    
+    if zero_pad == True:
+        size_y, size_x = 13, 21
+    else:
+        size_y, size_x = 16, 16
+    y_local_bins = np.linspace(-8.1, 8.1, 13)
+    bin_number = 6
+    y_local_min, y_local_max = y_local_bins[bin_number], y_local_bins[bin_number + 1]
     # load the labels and data
     inFilePaths = list(sorted(glob.glob(os.path.join(inFilePath, "labels*")))) 
     clslabels, pts, ylocals, trainrecons = [], [], [], []
@@ -43,6 +50,10 @@ def loadParquetData(
 
         # load the labels
         label = pd.read_parquet(inFile)
+        # filter on y-local bin
+        filtered_indices = label[(label['y-local'] >= y_local_min) & (label['y-local'] < y_local_max)].index
+        label = label.loc[filtered_indices].reset_index(drop=True)
+        
         pt = label['pt'].values
         ylocal = label['y-local'].values
         clslabel = np.full_like(pt, fill_value=-999, dtype=int)
@@ -54,8 +65,23 @@ def loadParquetData(
         pts.append(pt)
         ylocals.append(ylocal)
 
-        # load the data
+        # Load the data
         temp = pd.read_parquet(inFile.replace("labels", "recon2D"))
+        # Filter recon2D data using the same indices
+        temp = temp.loc[filtered_indices].reset_index(drop=True)
+        temp_array = temp.to_numpy().reshape(-1, size_y, size_x)  # Reshape
+        # Zero-pad the data to form 16 x X_size
+        if zero_pad:
+            padded_array = np.pad(temp_array, ((0, 0), (0, 3), (0, 0)), mode='constant', constant_values=0)  
+            temp_array = padded_array
+        # # Add noise at last timestamp
+        # if noise_sigma > 0:
+        #     for j in range(1):  # Since the filtering algorithm uses only the last timestamp, add noise there
+        #         noisy_array = add_noise(padded_array, mu=0, sig=noise_sigma, shuffled=False)  # Apply noise to the entire array
+        #     padded_array = noisy_array
+        temp_array = temp_array.reshape(temp_array.shape[0], -1)
+        temp = pd.DataFrame(temp_array, columns=[f"{i}" for i in range(temp_array.shape[1])])
+        # Quantize data
         temp = quantize_manual(temp, charge_levels=qm_charge_levels, quant_values=qm_quant_values, shuffled=True)
         trainrecons.append(temp)
 
@@ -73,21 +99,21 @@ def loadParquetData(
     def sumRow_vectorized(X):
         X = np.where(X < noise_threshold, 0, X)
         # X shape: (num_samples, 273)
-        X_reshaped = X.reshape(-1, 13, 21)
+        X_reshaped = X.reshape(-1, 16, size_x) # Changed from (13, X size) to (16, X size) after padding (14Sep25)
         X_reshaped = np.sum(X_reshaped, axis=2)
-        return X_reshaped  # shape: (num_samples, 13)
+        return X_reshaped  # shape: (num_samples, 16)
 
     print("Creating yprofiles")
     
     # Convert DataFrames to numpy arrays for vectorized operations
-    trainrecons_np = trainrecons_csv.values  # shape: (num_samples, 273)
+    trainrecons_np = trainrecons_csv.values  # shape: (num_samples, 273) -> (num_samples, 16*21) after DS introduced noise-injection and padding (14Sep25)
 
     # Compute yprofiles in a vectorized way
     yprofiles = sumRow_vectorized(trainrecons_np)
     # convert to numpy
     yprofiles = np.array(yprofiles)
     # pad the yprofiles to get to 16 dimension
-    yprofiles = np.pad(yprofiles, ((0, 0), (0, 3)), mode='constant', constant_values=0)
+    # yprofiles = np.pad(yprofiles, ((0, 0), (0, 3)), mode='constant', constant_values=0) # Padding moved to earlier part of code, DS (14Sep25)
 
     # save 
     if outDir is not None:
@@ -111,10 +137,11 @@ def loadParquetData(
 
 
 # convert yprofiles to the pixel programming for asic
-def yprofileToCompoutWrite(yprofiles, csv_file_name):
+def yprofileToCompoutWrite(yprofiles, csv_file_name, flip=True):
     # create compout of y-local subset
     print("Making compout of y-local subset")
-    filtered_pixelout = input_to_pixelout(yprofiles)
+    print("   writing to file:", csv_file_name,)
+    filtered_pixelout = input_to_pixelout(yprofiles, flip)
     with open(csv_file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(filtered_pixelout)
@@ -122,7 +149,7 @@ def yprofileToCompoutWrite(yprofiles, csv_file_name):
 
 # get the y-local bin from the yprofiles, clslabels and ylocals
 # Giuseppe seems to have chosen the 0th bin (corresponding to bin_number=6) to produce the test-vectors from dataset 8 (https://github.com/GiuseppeDiGuglielmo/directional-pixel-detectors/blob/asic-flow/multiclassifier/train.ipynb)
-def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(-8.1, 8.1, 13), bin_number=6):
+def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(-8.1, 8.1, 13), bin_number=6, flip=True):
     
     # pick up the ylocal min, max and interested range
     ylocal_min = bins[bin_number]
@@ -144,7 +171,7 @@ def getYLocalBin(yprofiles, ylocals, clslabels, outDir="./", bins = np.linspace(
     # create compout of y-local subset
     if outDir is not None:
         compout_file_name = os.path.join(outDir, f'compouts_ylocal_{ylocal_min:.2f}_{ylocal_max:.2f}.csv')
-        yprofileToCompoutWrite(filtered_yprofiles, compout_file_name)
+        yprofileToCompoutWrite(filtered_yprofiles, compout_file_name, flip)
         outDict["compout_file_name"] = compout_file_name
 
     return outDict
@@ -201,7 +228,7 @@ def prepareWeights(path):
     return csv_file
 
 # convert yprofiles to the pixel programming for asic
-def input_to_pixelout(x):
+def input_to_pixelout(x, flip):
     N_INFERENCES = x.shape[0]
 
     # first create compout
@@ -213,19 +240,23 @@ def input_to_pixelout(x):
             encoder_sum = []
             if(a==0):
                 encoder_sum = [0 for _ in range(16)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
                 
             elif(a==1):
                 encoder_sum = [1]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             elif(a==2):
                 encoder_sum = [2]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             elif(a==3):
                 encoder_sum = [3]+[0 for _ in range(15)]
-                encoder_sum.reverse()
+                if flip:
+                    encoder_sum.reverse()
 
             else:
                 l3=[]
@@ -234,7 +265,8 @@ def input_to_pixelout(x):
                     l3 = [3 for _ in range(result)]
                     l_diff = 16-len(l3)
                     encoder_sum = l3 + [0 for _ in range(l_diff)]
-                    encoder_sum.reverse()
+                    if flip:
+                        encoder_sum.reverse()
                 else:
                     result = int(a//3)
                     l3 = [3 for _ in range(result)]
@@ -242,7 +274,8 @@ def input_to_pixelout(x):
                     l3.append(diff)
                     l_diff = 16-len(l3)
                     encoder_sum = l3 + [0 for _ in range(l_diff)]
-                    encoder_sum.reverse()
+                    if flip:
+                        encoder_sum.reverse()
 
             encoder_values.append(encoder_sum)
         encoder_values = [j for i in encoder_values for j in i]
