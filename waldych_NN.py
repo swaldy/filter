@@ -21,5 +21,5 @@ from pandas import read_csv
 import math
 from tensorflow.keras.optimizers import Adam
 
-size = ['50x12P5x150_0fb']
-threshold = ['0.1']
+size = ['50x12P5x150_0fb'] #geometry
+threshold = ['0.1'] #in units of GeV. this is pt threshold
