@@ -39,7 +39,7 @@ df4 = pd.read_csv(f"./{dataset_name}/TestSetLabel_{tag}.csv")
 
 X_train = df1.values
 X_test  = df3.values
-y_train = df2.values.ravel()  # <-- important: make it 1D for SparseCategoricalCrossentropy
+y_train = df2.values.ravel()  
 y_test  = df4.values.ravel()
 
 # scale
@@ -47,7 +47,6 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test  = scaler.transform(X_test)
 
-# IMPORTANT: your new dataset is 1 feature (y-local), not 14.
 input_dim = X_train.shape[1]
 
 model = tf.keras.models.Sequential([
