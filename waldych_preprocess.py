@@ -27,7 +27,7 @@ for filepath in glob.iglob(dirtrain+'labels*.parquet'):
 print(iter," files present in directory.")
 for i in range(int(iter/3)):
         trainlabels.append(pd.read_parquet(dirtrain+'labels_d'+str(suffix+i+1)+'.parquet'))
-        trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
+        #trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
 trainlabels_csv = pd.concat(trainlabels, ignore_index=True)
 trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
 
