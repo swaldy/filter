@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import glob
 
 # Global variables
-threshold = 0.1
+threshold = 0.1 #in units of GeV
 noise_threshold = 400
 sensor_geom = '50x12P5x150_0fb'
 dataset_savedir =  '/eos/user/s/swaldych/smart_pix/labels/preprocess' # for save loc of final datasets
