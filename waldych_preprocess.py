@@ -65,3 +65,37 @@ if(number_of_events*2>iter_0):
     number_of_events = (iter_0//1000)*1000/2
 number_of_events = int(number_of_events)
 print("Number of events: ",number_of_events)
+
+import sys
+np.set_printoptions(threshold=sys.maxsize)
+def sumRow(X):
+    X = np.where(X < noise_threshold, 0, X)
+    sum1 = 0
+    sumList = []
+    for i in X:
+        sum1 = np.sum(i,axis=0)
+        sumList.append(sum1)
+        b = np.array(sumList)
+    return b
+trainlist1, trainlist2 = [], []
+hist_temp=[]
+for (index1, row1), (index2, row2) in zip(trainrecons_csv.iterrows(), trainlabels_csv.iterrows()):
+    rowSum = 0.0
+    X = row1.values
+    X = np.reshape(X,(13,21))
+    rowSum = sumRow(X)
+    hist_temp.append(np.sum(rowSum>0))
+    trainlist1.append(rowSum)
+    cls = -1
+    if(abs(row2['pt'])>threshold):
+        cls=0
+    elif(-1*threshold<=row2['pt']<0):
+        cls=1
+    elif(0<=row2['pt']<=threshold):
+        cls=2
+    trainlist2.append([row2['y-local'], cls, row2['pt']])
+
+plt.hist(hist_temp, bins=14,  range=[0, 14], histtype='step', fill=False, density=True)
+plt.show()
+traindf_all = pd.concat([pd.DataFrame(trainlist1), pd.DataFrame(trainlist2 , columns=['y-local', 'cls', 'pt'])], axis=1)
+print(traindf_all.head())
