@@ -29,7 +29,7 @@ for i in range(int(iter/3)):
         trainlabels.append(pd.read_parquet(dirtrain+'labels_d'+str(suffix+i+1)+'.parquet'))
         #trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
 trainlabels_csv = pd.concat(trainlabels, ignore_index=True)
-trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
+#trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
 
 iter_0, iter_1, iter_2 = 0, 0, 0
 iter_rem = 0
@@ -77,67 +77,17 @@ def sumRow(X):
         sumList.append(sum1)
         b = np.array(sumList)
     return b
-trainlist1, trainlist2 = [], []
-hist_temp=[]
-for (index1, row1), (index2, row2) in zip(trainrecons_csv.iterrows(), trainlabels_csv.iterrows()):
-    rowSum = 0.0
-    X = row1.values
-    X = np.reshape(X,(13,21))
-    rowSum = sumRow(X)
-    hist_temp.append(np.sum(rowSum>0))
-    trainlist1.append(rowSum)
-    cls = -1
-    if(abs(row2['pt'])>threshold):
-        cls=0
-    elif(-1*threshold<=row2['pt']<0):
-        cls=1
-    elif(0<=row2['pt']<=threshold):
-        cls=2
-    trainlist2.append([row2['y-local'], cls, row2['pt']])
 
-plt.hist(hist_temp, bins=14,  range=[0, 14], histtype='step', fill=False, density=True)
-plt.show()
-traindf_all = pd.concat([pd.DataFrame(trainlist1), pd.DataFrame(trainlist2 , columns=['y-local', 'cls', 'pt'])], axis=1)
-print(traindf_all.head())
+# --- build class from pt only, no recon2D ---
+df = trainlabels_csv.copy()
 
-totalsize = number_of_events
-random_seed0 = 10#11
-random_seed1 = 13#14
-random_seed2 = 19#20
+df["cls"] = -1
+df.loc[df["pt"].abs() > threshold, "cls"] = 0
+df.loc[(df["pt"] >= -threshold) & (df["pt"] < 0), "cls"] = 1
+df.loc[(df["pt"] >= 0) & (df["pt"] <= threshold), "cls"] = 2
 
-traindf_all = traindf_all.sample(frac=1, random_state=random_seed0).reset_index(drop=True)
-# traindf_all.to_csv(dataset_savedir+'/'+'/FullTrainData_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
-traindfcls0 = traindf_all.loc[traindf_all['cls']==0]
-traindfcls1 = traindf_all.loc[traindf_all['cls']==1]
-traindfcls2 = traindf_all.loc[traindf_all['cls']==2]
-print(traindfcls0.shape)
-print(traindfcls1.shape)
-print(traindfcls2.shape)
-print(traindfcls2.head())
-traindfcls0 = traindfcls0.iloc[:2*totalsize]
-traindfcls1 = traindfcls1.iloc[:totalsize]
-traindfcls2 = traindfcls2.iloc[:totalsize]
-print(traindfcls2.head())
-
-traincls0 = traindfcls0.sample(frac = 1, random_state=random_seed1)
-traincls1 = traindfcls1.sample(frac = 1, random_state=random_seed1)
-traincls2 = traindfcls2.sample(frac = 1, random_state=random_seed1)
-train = pd.concat([traincls0, traincls1, traincls2], axis=0)
-
-train = train.sample(frac=1, random_state=random_seed2)
-
-print(traincls0.shape)
-print(traincls1.shape)
-print(traincls2.shape)
-print(train.shape)
-
-trainlabel = train['cls']
-trainpt = train['pt']
+traindf_all = df[["y-local", "cls", "pt"]].copy()
 train = train.drop(['cls', 'pt'], axis=1)
-
-print(train.shape)
-print(trainlabel.shape)
-print(trainpt.shape)
 
 train.to_csv(dataset_savedir+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
 trainlabel.to_csv(dataset_savedir+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
