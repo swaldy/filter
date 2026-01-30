@@ -86,9 +86,29 @@ df.loc[df["pt"].abs() > threshold, "cls"] = 0
 df.loc[(df["pt"] >= -threshold) & (df["pt"] < 0), "cls"] = 1
 df.loc[(df["pt"] >= 0) & (df["pt"] <= threshold), "cls"] = 2
 
+# build final dataframe
 traindf_all = df[["y-local", "cls", "pt"]].copy()
-train = train.drop(['cls', 'pt'], axis=1)
 
-train.to_csv(dataset_savedir+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
-trainlabel.to_csv(dataset_savedir+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
-trainpt.to_csv(dataset_savedir+'/TrainSetPt_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
+# split inputs / targets
+trainlabel = traindf_all["cls"]
+trainpt = traindf_all["pt"]
+train = traindf_all.drop(["cls", "pt"], axis=1)
+
+# save
+train.to_csv(
+    dataset_savedir + '/FullPrecisionInputTrainSet_' +
+    sensor_geom + '_0P' + str(threshold - int(threshold))[2:] + 'thresh.csv',
+    index=False
+)
+
+trainlabel.to_csv(
+    dataset_savedir + '/TrainSetLabel_' +
+    sensor_geom + '_0P' + str(threshold - int(threshold))[2:] + 'thresh.csv',
+    index=False
+)
+
+trainpt.to_csv(
+    dataset_savedir + '/TrainSetPt_' +
+    sensor_geom + '_0P' + str(threshold - int(threshold))[2:] + 'thresh.csv',
+    index=False
+)
