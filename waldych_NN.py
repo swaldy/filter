@@ -31,10 +31,10 @@ tag = f"{sensor_geom}_0P{str(threshold - int(threshold))[2:]}thresh"
 print("=============================")
 print(f"Training model for {sensor_geom} at pT boundary = {threshold}, seed={seed}")
 
-df1 = pd.read_csv(f"./FullPrecisionInputTrainSet_{tag}.csv")
-df2 = pd.read_csv(f"./TrainSetLabel_{tag}.csv")
-df3 = pd.read_csv(f"./FullPrecisionInputTestSet_{tag}.csv")
-df4 = pd.read_csv(f"./TestSetLabel_{tag}.csv")
+df1 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
+df2 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
+df3 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTestSet_{tag}.csv")
+df4 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TestSetLabel_{tag}.csv")
 
 X_train = df1.values
 X_test  = df3.values
