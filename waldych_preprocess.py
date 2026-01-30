@@ -8,7 +8,7 @@ import glob
 # Global variables
 threshold = 0.5
 noise_threshold = 400
-sensor_geom = '100x25x150_1100fb'
+sensor_geom = '50x12P5x150_0fb'
 dataset_savedir =  '/eos/user/s/swaldych/smart_pix/labels/preprocess' # for save loc of final datasets
 
 dirtrain = '/eos/user/s/swaldych/smart_pix/labels/'
