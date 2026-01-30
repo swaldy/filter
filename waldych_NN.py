@@ -25,7 +25,7 @@ from sklearn.model_selection import train_test_split
 sensor_geom = "50x12P5x150_0fb"
 threshold = 0.1 #in GeV
 seed = 13  
-
+results_dir = '/eos/user/s/swaldych/smart_pix/labels/results'
 tf.random.set_seed(seed)
 
 tag = f"{sensor_geom}_0P{str(threshold - int(threshold))[2:]}thresh"
