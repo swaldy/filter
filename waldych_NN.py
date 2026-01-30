@@ -20,7 +20,7 @@ from pandas import read_csv
 import math
 from tensorflow.keras.optimizers import Adam
 
-sensor_geom = "100x25x150_1100fb"
+sensor_geom = "50x12P5x150_0fb"
 threshold = 0.1 #in GeV
 seed = 13  
 
