@@ -19,6 +19,8 @@ import pandas as pd
 from pandas import read_csv
 import math
 from tensorflow.keras.optimizers import Adam
+from sklearn.model_selection import train_test_split
+
 
 sensor_geom = "50x12P5x150_0fb"
 threshold = 0.1 #in GeV
@@ -31,15 +33,25 @@ tag = f"{sensor_geom}_0P{str(threshold - int(threshold))[2:]}thresh"
 print("=============================")
 print(f"Training model for {sensor_geom} at pT boundary = {threshold}, seed={seed}")
 
-df1 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
-df2 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
-df3 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTestSet_{tag}.csv")
-df4 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TestSetLabel_{tag}.csv")
+dfX = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
+dfy = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
 
-X_train = df1.values
-X_test  = df3.values
-y_train = df2.values.ravel()  
-y_test  = df4.values.ravel()
+X = dfX.values
+y = dfy.values.ravel()
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=13, shuffle=True
+)
+
+# df1 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
+# df2 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
+# # df3 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTestSet_{tag}.csv")
+# # df4 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TestSetLabel_{tag}.csv")
+
+# X_train = df1.values
+# X_test  = df3.values
+# y_train = df2.values.ravel()  
+# y_test  = df4.values.ravel()
 
 # scale
 scaler = StandardScaler()
