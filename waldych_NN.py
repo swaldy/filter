@@ -21,3 +21,4 @@ from pandas import read_csv
 import math
 from tensorflow.keras.optimizers import Adam
 
+size= [50x12P5x150_0fb]
