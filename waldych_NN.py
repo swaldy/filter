@@ -104,7 +104,7 @@ plt.title('Training and validation loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.savefig(f"./{results_dir}/loss_{tag}.png")
+plt.savefig(f"{results_dir}/loss_{tag}.png")
 plt.close()
 
 # --- ACCURACY ---
@@ -118,7 +118,7 @@ plt.title('Training and validation accuracy')
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
-plt.savefig(f"./{results_dir}/accuracy_{tag}.png")
+plt.savefig(f"{results_dir}/accuracy_{tag}.png")
 plt.close()
 
 # --- PREDICTIONS ---
@@ -126,11 +126,11 @@ preds = model.predict(X_test)
 predictionsFiles = np.argmax(preds, axis=1)
 
 pd.DataFrame(predictionsFiles, columns=["predict"]).to_csv(
-    f"./{results_dir}/predictionsFiles_{tag}.csv", index=False
+    f"{results_dir}/predictionsFiles_{tag}.csv", index=False
 )
 
 pd.DataFrame(y_test, columns=["true"]).to_csv(
-    f"./{results_dir}/testResults_{tag}.csv", index=False
+    f"{results_dir}/testResults_{tag}.csv", index=False
 )
 
 # --- TEST METRICS ---
@@ -140,9 +140,9 @@ print("Test accuracy:", score[1])
 
 disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predictionsFiles)
 disp.figure_.suptitle("Multiclassifier Confusion Matrix")
-plt.savefig(f"./{results_dir}/confusionMatrix_{tag}.png")
+plt.savefig(f"{results_dir}/confusionMatrix_{tag}.png")
 plt.close()
 
 # --- SAVE MODEL ---
-model.save_weights(f"./{models_dir}/trained_model_{tag}.weights.h5")
-model.save(f"./{models_dir}/trained_model_{tag}.h5")
+model.save_weights(f"{models_dir}/trained_model_{tag}.weights.h5")
+model.save(f"{models_dir}/trained_model_{tag}.h5")
