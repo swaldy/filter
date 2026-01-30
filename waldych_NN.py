@@ -77,3 +77,47 @@ history = model.fit(
     shuffle=True,
     verbose=1
 )
+
+history_dict = history.history
+loss_values = history_dict['loss'] 
+val_loss_values = history_dict['val_loss'] 
+epochs = range(1, len(loss_values) + 1) 
+plt.plot(epochs, loss_values, 'bo', label='Training loss')
+plt.plot(epochs, val_loss_values, 'orange', label='Validation loss')
+plt.title('Training and validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.savefig('./'+results_dir+'/loss_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
+plt.close()
+acc = history.history['sparse_categorical_accuracy']
+al_acc = history.history['val_sparse_categorical_accuracy']
+epochs = range(1, len(acc) + 1)
+plt.plot(epochs, acc, 'bo', label='Training accuracy')
+plt.plot(epochs, val_acc, 'orange', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+#np.max(val_acc)
+plt.savefig('./'+results_dir+'/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
+plt.close()
+preds = model.predict(X_test) 
+predictionsFiles =np.argmax(preds, axis=1)
+pd.DataFrame(predictionsFiles).to_csv("./"+results_dir+"/predictionsFiles_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='predict', index=False)
+pd.DataFrame(y_test).to_csv("./"+results_dir+"/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='true', index=False)
+plt.hist(y_test, bins=30)
+plt.show()
+plt.close()
+score = model.evaluate(X_test, y_test, verbose=0)
+print("Test loss:", score[0])
+print("Test accuracy:", score[1])
+   
+disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predictionsFiles)
+disp.figure_.suptitle("Multiclassifier Confusion Matrix")
+print(f"Confusion matrix:\n{disp.confusion_matrix}")
+plt.savefig('./'+results_dir+'/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.png')
+plt.show()
+plt.close()
+model.save_weights('./'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.weights.h5')
+model.save('./'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.h5')
