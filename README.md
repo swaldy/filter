@@ -1,3 +1,7 @@
+# Terminal setup
+cd smart_pix
+source .venv/bin/activate
+
 # Filtering algorithm
 
 Pipeline to run all codes: pre_processing -> neuralNetwork -> data_reduction -> plotting & turnOnCurves.
