@@ -1,6 +1,6 @@
 # Terminal setup
 ```
-source /cvmfs/sft.cern.ch/lcg/views/LCG_103cuda/x86_64-centos9-gcc11-opt/setup.sh
+source /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-el9-gcc11-opt/setup.sh
 ```
 # Filtering algorithm
 
