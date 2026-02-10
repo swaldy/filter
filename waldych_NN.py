@@ -127,7 +127,7 @@ plt.savefig(f"{results_dir}/accuracy_{tag}.png")
 plt.close()
 
 # --- PREDICTIONS ---
-preds = model.predict(X_test)what i
+preds = model.predict(X_test)
 pred_class = np.argmax(preds, axis=1)
 accepted = (pred_class == 0)
 
