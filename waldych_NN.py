@@ -129,6 +129,10 @@ plt.close()
 # --- PREDICTIONS ---
 preds = model.predict(X_test)
 pred_class = np.argmax(preds, axis=1)
+
+print("pred_class counts:", np.bincount(pred_class, minlength=3))
+print("overall acceptance (pred==0):", np.mean(pred_class == 0))
+
 accepted = (pred_class == 0)
 
 pt_vals = []
