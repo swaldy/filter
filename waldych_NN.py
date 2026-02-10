@@ -23,7 +23,7 @@ from sklearn.model_selection import train_test_split
 
 
 sensor_geom = "50x12P5x150_0fb"
-threshold = 0.1 #in GeV
+threshold = 0.2 #in GeV
 seed = 13  
 results_dir = '/eos/user/s/swaldych/smart_pix/labels/results'
 models_dir = '/eos/user/s/swaldych/smart_pix/labels/models'
@@ -34,8 +34,8 @@ tag = f"{sensor_geom}_0P{str(threshold - int(threshold))[2:]}thresh"
 print("=============================")
 print(f"Training model for {sensor_geom} at pT boundary = {threshold}, seed={seed}")
 
-dfX = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
-dfy = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
+dfX = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv") #y-local
+dfy = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv") 
 
 X = dfX.values
 y = dfy.values.ravel()
@@ -92,6 +92,11 @@ history = model.fit(
 
 
 history_dict = history.history
+
+pt=pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetPt_{tag}.csv")
+real_pt=pt.values
+
+
 
 # --- LOSS ---
 loss_values = history_dict['loss']
