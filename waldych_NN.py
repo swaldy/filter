@@ -182,7 +182,7 @@ score = model.evaluate(X_test, y_test, verbose=0)
 print("Test loss:", score[0])
 print("Test accuracy:", score[1])
 
-disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predictionsFiles)
+disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, pred_class)
 disp.figure_.suptitle("Multiclassifier Confusion Matrix")
 plt.savefig(f"{results_dir}/confusionMatrix_{tag}.png")
 plt.close()
