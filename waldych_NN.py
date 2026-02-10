@@ -162,7 +162,7 @@ plt.ylabel("classifier acceptance")
 plt.ylim(0,1)
 plt.show()
 
-pd.DataFrame(predictionsFiles, columns=["predict"]).to_csv(
+pd.DataFrame(pred_class, columns=["predict"]).to_csv(
     f"{results_dir}/predictionsFiles_{tag}.csv", index=False
 )
 
