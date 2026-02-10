@@ -3,6 +3,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
+from sklearn.utils.class_weight import compute_class_weight
 from sklearn import datasets, svm, metrics
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
@@ -65,6 +66,11 @@ X_test  = scaler.transform(X_test)
 
 input_dim = X_train.shape[1]
 
+classes = np.array([0, 1, 2])
+w = compute_class_weight(class_weight="balanced", classes=classes, y=y_train.astype(int))
+class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
+print("class_weight:", class_weight)
+
 model = tf.keras.models.Sequential([
     tf.keras.layers.Input(shape=(input_dim,)),
     tf.keras.layers.Dense(128, activation='relu'),
@@ -91,7 +97,8 @@ history = model.fit(
     batch_size=1024,
     validation_split=0.2,
     shuffle=True,
-    verbose=1
+    verbose=1,
+    class_weight=class_weight
 )
 
 
