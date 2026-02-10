@@ -40,7 +40,7 @@ pt=pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetPt_{ta
 
 X = dfX.values
 y = dfy.values.ravel()
-real_pt=pt.values
+real_pt=pt.values.ravel()
 
 X_train, X_test, y_train, y_test, pt_train, pt_test = train_test_split(
     X, y, real_pt, test_size=0.2, shuffle=True
@@ -97,6 +97,9 @@ history = model.fit(
 
 history_dict = history.history
 
+print("y counts:", np.bincount(y.astype(int), minlength=3))
+print("y_train counts:", np.bincount(y_train.astype(int), minlength=3))
+print("y_test counts:", np.bincount(y_test.astype(int), minlength=3))
 
 # --- LOSS ---
 loss_values = history_dict['loss']
