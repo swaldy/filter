@@ -36,13 +36,17 @@ print(f"Training model for {sensor_geom} at pT boundary = {threshold}, seed={see
 
 dfX = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv") #y-local
 dfy = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv") 
+pt=pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetPt_{tag}.csv")
 
 X = dfX.values
 y = dfy.values.ravel()
+real_pt=pt.values
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=13, shuffle=True
-)
+X_train, X_test, y_train, y_test, pt_train, pt_test = train_test_split(
+    X, y, real_pt, test_size=0.2, shuffle=True
+) #we are saying split arrays the same way
+
+#you cant load in the real pt and then plot is bc the line above shuffles things around. We need the real pt to be shuffled too otherwise its like plotting event A with event B. We need A with A. 
 
 # df1 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/FullPrecisionInputTrainSet_{tag}.csv")
 # df2 = pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetLabel_{tag}.csv")
@@ -93,10 +97,6 @@ history = model.fit(
 
 history_dict = history.history
 
-pt=pd.read_csv(f"/eos/user/s/swaldych/smart_pix/labels/preprocess/TrainSetPt_{tag}.csv")
-real_pt=pt.values
-
-
 
 # --- LOSS ---
 loss_values = history_dict['loss']
@@ -127,8 +127,40 @@ plt.savefig(f"{results_dir}/accuracy_{tag}.png")
 plt.close()
 
 # --- PREDICTIONS ---
-preds = model.predict(X_test)
-predictionsFiles = np.argmax(preds, axis=1)
+preds = model.predict(X_test)what i
+pred_class = np.argmax(preds, axis=1)
+accepted = (pred_class == 0)
+
+pt_vals = []
+acc_vals = []
+
+step = 0.05   # GeV
+pmin = pt_test.min()
+pmax = pt_test.max()
+
+p = pmin
+while p < pmax:
+
+    total = 0
+    passed = 0
+
+    for i in range(len(pt_test)):
+        if p <= pt_test[i] < p + step:
+            total += 1
+            if accepted[i]:
+                passed += 1
+
+    if total > 0:
+        pt_vals.append(p + step/2)
+        acc_vals.append(passed / total)
+
+    p += step
+
+plt.plot(pt_vals, acc_vals, 'o')
+plt.xlabel("true pt (GeV)")
+plt.ylabel("classifier acceptance")
+plt.ylim(0,1)
+plt.show()
 
 pd.DataFrame(predictionsFiles, columns=["predict"]).to_csv(
     f"{results_dir}/predictionsFiles_{tag}.csv", index=False
