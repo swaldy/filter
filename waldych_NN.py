@@ -167,7 +167,7 @@ plt.ylim(0,1)
 plt.show()
 
 pd.DataFrame(pred_class, columns=["predict"]).to_csv(
-    f"{results_dir}/predictionsFiles_{tag}.csv", index=False
+    f"{results_dir}/pred_class_{tag}.csv", index=False
 )
 
 pd.DataFrame(y_test, columns=["true"]).to_csv(
