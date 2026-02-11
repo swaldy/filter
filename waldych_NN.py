@@ -66,10 +66,6 @@ X_test  = scaler.transform(X_test)
 
 input_dim = X_train.shape[1]
 
-classes = np.array([0, 1, 2])
-w = compute_class_weight(class_weight="balanced", classes=classes, y=y_train.astype(int))
-class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
-print("class_weight:", class_weight)
 
 model = tf.keras.models.Sequential([
     tf.keras.layers.Input(shape=(input_dim,)),
@@ -84,21 +80,25 @@ model.compile(
 )
 
 es = EarlyStopping(
-    monitor='val_sparse_categorical_accuracy',
-    mode='max',
+    monitor='val_loss',
+    mode='min',
     patience=20,
     restore_best_weights=True
 )
 
+classes = np.array([0,1,2])
+w = compute_class_weight("balanced", classes=classes, y=y_train.astype(int))
+class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
+
 history = model.fit(
     X_train, y_train,
-    callbacks=[es],
+    validation_split=0.2,
     epochs=200,
     batch_size=1024,
-    validation_split=0.2,
+    callbacks=[es],
+    class_weight=class_weight,
     shuffle=True,
-    verbose=1,
-    class_weight=class_weight
+    verbose=1
 )
 
 
