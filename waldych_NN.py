@@ -80,15 +80,15 @@ model.compile(
 )
 
 es = EarlyStopping(
-    monitor='val_loss',
+    monitor='val_sparse_categorical_accuracy',
     mode='min',
     patience=20,
     restore_best_weights=True
 )
 
-classes = np.array([0,1,2])
-w = compute_class_weight("balanced", classes=classes, y=y_train.astype(int))
-class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
+# classes = np.array([0,1,2])
+# w = compute_class_weight("balanced", classes=classes, y=y_train.astype(int))
+# class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
 
 history = model.fit(
     X_train, y_train,
@@ -96,7 +96,7 @@ history = model.fit(
     epochs=200,
     batch_size=1024,
     callbacks=[es],
-    class_weight=class_weight,
+    #class_weight=class_weight,
     shuffle=True,
     verbose=1
 )
