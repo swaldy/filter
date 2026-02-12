@@ -111,9 +111,9 @@ traindf_all = traindf_all.sample(frac=1, random_state=random_seed0).reset_index(
 traindfcls0 = traindf_all.loc[traindf_all['cls']==0]
 traindfcls1 = traindf_all.loc[traindf_all['cls']==1]
 traindfcls2 = traindf_all.loc[traindf_all['cls']==2]
-output_file.write(str(traindfcls0.shape)+"\n")
-output_file.write(str(traindfcls1.shape)+"\n")
-output_file.write(str(traindfcls2.shape)+"\n")
+# output_file.write(str(traindfcls0.shape)+"\n")
+# output_file.write(str(traindfcls1.shape)+"\n")
+# output_file.write(str(traindfcls2.shape)+"\n")
 traindfcls0 = traindfcls0.iloc[:2*totalsize]
 traindfcls1 = traindfcls1.iloc[:totalsize]
 traindfcls2 = traindfcls2.iloc[:totalsize]
