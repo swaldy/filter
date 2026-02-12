@@ -141,7 +141,7 @@ accepted = (pred_class == 0)
 pt_vals = []
 acc_vals = []
 
-step = 0.5   # GeV
+step = 0.2   # GeV
 pmin = pt_test.min()
 pmax = pt_test.max()
 
