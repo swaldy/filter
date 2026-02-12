@@ -163,8 +163,11 @@ while p < pmax:
     if total > 0:
         pt_vals.append(p + step/2)
         acc_vals.append(passed / total)
+        err = np.sqrt(p * (1 - p) / total)
 
     p += step
+
+
 
 plt.plot(pt_vals, acc_vals, 'o')
 plt.xlabel("true pt (GeV)")
