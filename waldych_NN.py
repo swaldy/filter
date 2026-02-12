@@ -168,10 +168,10 @@ while p < pmax:
     p += step
 
 
-
-plt.plot(pt_vals, acc_vals, 'o')
+plt.errorbars(pt_vals, acc_vals, 'o', yerr=err,markersize=3)
 plt.xlabel("true pt (GeV)")
-plt.ylabel("classifier acceptance")
+plt.title("Model 2: Classifier acceptance as a function of pT")
+plt.ylabel("classifier acceptance pT > |0.2| GeV")
 plt.ylim(0,1)
 plt.show()
 
