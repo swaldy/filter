@@ -41,10 +41,10 @@ for iter, row in trainlabels_csv.iterrows():
         iter_2+=1
     else:
         iter_rem+=1
-output_file.write("iter_0: "+str(iter_0)+"\n")
-output_file.write("iter_1: "+str(iter_1)+"\n")
-output_file.write("iter_2: "+str(iter_2)+"\n")
-output_file.write("iter_rem: "+str(iter_rem)+"\n")
+# output_file.write("iter_0: "+str(iter_0)+"\n")
+# output_file.write("iter_1: "+str(iter_1)+"\n")
+# output_file.write("iter_2: "+str(iter_2)+"\n")
+# output_file.write("iter_rem: "+str(iter_rem)+"\n")
 
 plt.hist(trainlabels_csv['pt'], bins=100)
 plt.title('pT of all events')
@@ -125,18 +125,18 @@ train = pd.concat([traincls0, traincls1, traincls2], axis=0)
 
 train = train.sample(frac=1, random_state=random_seed2)
 
-output_file.write(str(traincls0.shape)+"\n")
-output_file.write(str(traincls1.shape)+"\n")
-output_file.write(str(traincls2.shape)+"\n")
-output_file.write(str(train.shape)+"\n")
+# output_file.write(str(traincls0.shape)+"\n")
+# output_file.write(str(traincls1.shape)+"\n")
+# output_file.write(str(traincls2.shape)+"\n")
+# output_file.write(str(train.shape)+"\n")
 
 trainlabel = train['cls']
 trainpt = train['pt']
 train = train.drop(['cls', 'pt'], axis=1)
 
-output_file.write(str(train.shape)+"\n")
-output_file.write(str(trainlabel.shape)+"\n")
-output_file.write(str(trainpt.shape)+"\n")
+# output_file.write(str(train.shape)+"\n")
+# output_file.write(str(trainlabel.shape)+"\n")
+# output_file.write(str(trainpt.shape)+"\n")
 
 train.to_csv(dataset_savedir+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
 trainlabel.to_csv(dataset_savedir+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv', index=False)
