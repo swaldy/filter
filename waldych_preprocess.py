@@ -42,6 +42,10 @@ for iter, row in trainlabels_csv.iterrows():
         iter_2+=1
     else:
         iter_rem+=1
+output_file.write("iter_0: "+str(iter_0)+"\n")
+output_file.write("iter_1: "+str(iter_1)+"\n")
+output_file.write("iter_2: "+str(iter_2)+"\n")
+output_file.write("iter_rem: "+str(iter_rem)+"\n")
 print("iter_0: ",iter_0)
 print("iter_1: ",iter_1)
 print("iter_2: ",iter_2)
