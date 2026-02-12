@@ -48,18 +48,18 @@ for iter, row in trainlabels_csv.iterrows():
 
 plt.hist(trainlabels_csv['pt'], bins=100)
 plt.title('pT of all events')
-plt.savefig(directory+"train_pt_all_"+sensor_geom+".png")
+plt.savefig(dataset_savedir+"train_pt_all_"+sensor_geom+".png")
 plt.close()
 
 plt.hist(trainlabels_csv[abs(trainlabels_csv['pt'])>threshold]['pt'], bins=100)
 plt.title('pT of Class 0 events')
-plt.savefig(directory+"train_pt_cls0_"+sensor_geom+".png")
+plt.savefig(dataset_savedir+"train_pt_cls0_"+sensor_geom+".png")
 plt.close()
 
 plt.hist(trainlabels_csv[(0<=trainlabels_csv['pt'])&(trainlabels_csv['pt']<=threshold)]['pt'], bins=50)
 plt.hist(trainlabels_csv[(-1*threshold<=trainlabels_csv['pt'])& (trainlabels_csv['pt']<0)]['pt'], bins=50)
 plt.title('pT of Class 1+2 events')
-plt.savefig(directory+"train_pt_cls12_"+sensor_geom+".png")
+plt.savefig(dataset_savedir+"train_pt_cls12_"+sensor_geom+".png")
 plt.close()
 
 number_of_events = (min(iter_1, iter_2)//1000)*1000
@@ -96,7 +96,7 @@ for (index1, row1), (index2, row2) in zip(trainrecons_csv.iterrows(), trainlabel
     trainlist2.append([row2['y-local'], cls, row2['pt']])
 
 plt.hist(hist_temp, bins=14,  range=[0, 14], histtype='step', fill=False, density=True)
-plt.savefig(directory+"y_profile_afterThreshold_"+sensor_geom+".png")
+plt.savefig(dataset_savedir+"y_profile_afterThreshold_"+sensor_geom+".png")
 plt.close()
 
 traindf_all = pd.concat([pd.DataFrame(trainlist1), pd.DataFrame(trainlist2 , columns=['y-local', 'cls', 'pt'])], axis=1)
