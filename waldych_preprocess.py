@@ -18,7 +18,6 @@ print(dftrain.head())
 print(dftrain.tail())
 
 trainlabels = []
-trainrecons = []
 
 iter=0
 suffix = 16400
