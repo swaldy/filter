@@ -70,25 +70,28 @@ model = tf.keras.models.Sequential([
               tf.keras.layers.Dense(3, activation='softmax')
             ])
             
-model.compile(optimizer=Adam(),
+model.compile(optimizer=Adam(learning_rate=0.001),
               loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False), # default from_logits=False
               metrics=[keras.metrics.SparseCategoricalAccuracy()])
             
 model.summary()
 
-es = EarlyStopping(monitor='val_sparse_categorical_accuracy', 
-                                   mode='max', # don't minimize the accuracy!
-                                   patience=20,
-                                   restore_best_weights=True)
+es = EarlyStopping(
+    monitor='val_loss',
+    mode='min',
+    patience=20,
+    restore_best_weights=True
+)
 
-history = model.fit(X_train,
-                    y_train,
-                    callbacks=[es],
-                    epochs=200, 
-                    batch_size=1024,
-                    validation_split=0.2,
-                    shuffle=True,
-                    verbose=1)
+history = model.fit(
+    X_train, y_train,
+    validation_data=(X_test, y_test),
+    epochs=200,
+    batch_size=1024,
+    callbacks=[es],
+    shuffle=True,
+    verbose=1
+)
 
 # classes = np.array([0,1,2])
 # w = compute_class_weight("balanced", classes=classes, y=y_train.astype(int))
