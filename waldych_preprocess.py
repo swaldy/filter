@@ -81,6 +81,65 @@ def sumRow(X):
         sumList.append(sum1)
         b = np.array(sumList)
     return b
+trainlist1, trainlist2 = [], []
+hist_temp=[]
+for (index1, row1) in zip (trainlabels_csv.iterrows()):
+    rowSum = 0.0
+    X = row1.values
+    X = np.reshape(X,(13,21))
+    rowSum = sumRow(X)
+    hist_temp.append(np.sum(rowSum>0))
+    trainlist1.append(rowSum)
+    cls = -1
+    if(abs(row2['pt'])>threshold):
+        cls=0
+    elif(-1*threshold<=row2['pt']<0):
+        cls=1
+    elif(0<=row2['pt']<=threshold):
+        cls=2
+    trainlist2.append([row2['y-local'], cls, row2['pt']])
+    
+plt.hist(hist_temp, bins=14,  range=[0, 14], histtype='step', fill=False, density=True)
+plt.savefig(directory+"y_profile_afterThreshold_"+sensor_geom+".png")
+plt.close()
+
+traindf_all = pd.concat([pd.DataFrame(trainlist1), pd.DataFrame(trainlist2 , columns=['y-local', 'cls', 'pt'])], axis=1)
+
+totalsize = number_of_events
+random_seed0 = 10#11
+random_seed1 = 13#14
+random_seed2 = 19#20
+
+traindf_all = traindf_all.sample(frac=1, random_state=random_seed0).reset_index(drop=True)
+traindfcls0 = traindf_all.loc[traindf_all['cls']==0]
+traindfcls1 = traindf_all.loc[traindf_all['cls']==1]
+traindfcls2 = traindf_all.loc[traindf_all['cls']==2]
+output_file.write(str(traindfcls0.shape)+"\n")
+output_file.write(str(traindfcls1.shape)+"\n")
+output_file.write(str(traindfcls2.shape)+"\n")
+traindfcls0 = traindfcls0.iloc[:2*totalsize]
+traindfcls1 = traindfcls1.iloc[:totalsize]
+traindfcls2 = traindfcls2.iloc[:totalsize]
+
+traincls0 = traindfcls0.sample(frac = 1, random_state=random_seed1)
+traincls1 = traindfcls1.sample(frac = 1, random_state=random_seed1)
+traincls2 = traindfcls2.sample(frac = 1, random_state=random_seed1)
+train = pd.concat([traincls0, traincls1, traincls2], axis=0)
+
+train = train.sample(frac=1, random_state=random_seed2)
+
+output_file.write(str(traincls0.shape)+"\n")
+output_file.write(str(traincls1.shape)+"\n")
+output_file.write(str(traincls2.shape)+"\n")
+output_file.write(str(train.shape)+"\n")
+
+trainlabel = train['cls']
+trainpt = train['pt']
+train = train.drop(['cls', 'pt'], axis=1)
+
+output_file.write(str(train.shape)+"\n")
+output_file.write(str(trainlabel.shape)+"\n")
+output_file.write(str(trainpt.shape)+"\n")
 
 # --- build class from pt only, no recon2D ---
 df = trainlabels_csv.copy()
