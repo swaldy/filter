@@ -61,45 +61,38 @@ X_train, X_test, y_train, y_test, pt_train, pt_test = train_test_split(
 
 # scale
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test  = scaler.transform(X_test)
-
-input_dim = X_train.shape[1]
-
+X_train = scaler.fit_transform(X_train.reshape(-1, X_train.shape[-1])).reshape(X_train.shape)
+X_test = scaler.transform(X_test.reshape(-1, X_test.shape[-1])).reshape(X_test.shape)
 
 model = tf.keras.models.Sequential([
-    tf.keras.layers.Input(shape=(input_dim,)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(3, activation='softmax'),
-])
+              tf.keras.layers.Flatten(input_shape=(14,)),
+              tf.keras.layers.Dense(128, activation='relu'),
+              tf.keras.layers.Dense(3, activation='softmax')
+            ])
+            
+model.compile(optimizer=Adam(),
+              loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False), # default from_logits=False
+              metrics=[keras.metrics.SparseCategoricalAccuracy()])
+            
+model.summary()
 
-model.compile(
-    optimizer=Adam(),
-    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False),
-    metrics=[keras.metrics.SparseCategoricalAccuracy()],
-)
+es = EarlyStopping(monitor='val_sparse_categorical_accuracy', 
+                                   mode='max', # don't minimize the accuracy!
+                                   patience=20,
+                                   restore_best_weights=True)
 
-es = EarlyStopping(
-    monitor='val_sparse_categorical_accuracy',
-    mode='min',
-    patience=20,
-    restore_best_weights=True
-)
+history = model.fit(X_train,
+                    y_train,
+                    callbacks=[es],
+                    epochs=200, 
+                    batch_size=1024,
+                    validation_split=0.2,
+                    shuffle=True,
+                    verbose=1)
 
 # classes = np.array([0,1,2])
 # w = compute_class_weight("balanced", classes=classes, y=y_train.astype(int))
 # class_weight = {int(c): float(wi) for c, wi in zip(classes, w)}
-
-history = model.fit(
-    X_train, y_train,
-    validation_split=0.2,
-    epochs=200,
-    batch_size=1024,
-    callbacks=[es],
-    #class_weight=class_weight,
-    shuffle=True,
-    verbose=1
-)
 
 
 history_dict = history.history
