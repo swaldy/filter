@@ -24,7 +24,6 @@ iter=0
 suffix = 16400
 for filepath in glob.iglob(dirtrain+'labels*.parquet'):
         iter+=3
-        output_file.write(str(iter)+" files present in directory."+"\n")
 for i in range(int(iter/3)):
         trainlabels.append(pd.read_parquet(dirtrain+'labels_d'+str(suffix+i+1)+'.parquet'))
         trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
