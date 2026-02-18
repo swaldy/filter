@@ -15,3 +15,7 @@ real_pt=pt.values
 
 X_train, X_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, shuffle=True)
+
+bst = XGBClassifier(n_estimators=2, max_depth=2, learning_rate=1, objective='binary:logistic')
+bst.fit(X_train, y_train)
+preds = bst.predict(X_test)
