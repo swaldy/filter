@@ -19,11 +19,12 @@ real_pt=pt.values
 X_train, X_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, shuffle=True)
 
-bst = XGBClassifier(n_estimators=2, max_depth=2, learning_rate=1, objective='binary:logistic')
+bst = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.001, objective='binary:logistic')
 bst.fit(X_train, y_train)
 preds = bst.predict(X_test)
 
-pred_class = np.argmax(preds, axis=1)
+pred_class = np.argmax(preds, axis=1) #returns the indices of the maximum values along the rows (axis=0 gives col)
+print(pred_class)
 
 print("pred_class counts:", np.bincount(pred_class, minlength=3))
 print("overall acceptance (pred==0):", np.mean(pred_class == 0))
