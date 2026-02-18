@@ -21,7 +21,6 @@ bst = XGBClassifier(n_estimators=2, max_depth=2, learning_rate=1, objective='bin
 bst.fit(X_train, y_train)
 preds = bst.predict(X_test)
 
-preds = model.predict(X_test)
 pred_class = np.argmax(preds, axis=1)
 
 print("pred_class counts:", np.bincount(pred_class, minlength=3))
