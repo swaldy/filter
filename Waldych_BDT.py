@@ -23,45 +23,46 @@ bst = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.001, objectiv
 bst.fit(X_train, y_train)
 preds = bst.predict(X_test)
 print(type(preds))
+print(preds)
 
 pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
 print(pred_class)
 
-print("pred_class counts:", np.bincount(pred_class, minlength=3))
-print("overall acceptance (pred==0):", np.mean(pred_class == 0))
+# print("pred_class counts:", np.bincount(pred_class, minlength=3))
+# print("overall acceptance (pred==0):", np.mean(pred_class == 0))
 
-accepted = (pred_class == 0)
+# accepted = (pred_class == 0)
 
-pt_vals = []
-acc_vals = []
+# pt_vals = []
+# acc_vals = []
 
-step = 0.2   # GeV
-pmin = pt_test.min()
-pmax = pt_test.max()
+# step = 0.2   # GeV
+# pmin = pt_test.min()
+# pmax = pt_test.max()
 
-p = pmin
-while p < pmax:
+# p = pmin
+# while p < pmax:
 
-    total = 0
-    passed = 0
+#     total = 0
+#     passed = 0
 
-    for i in range(len(pt_test)):
-        if p <= pt_test[i] < p + step:
-            total += 1
-            if accepted[i]:
-                passed += 1
+#     for i in range(len(pt_test)):
+#         if p <= pt_test[i] < p + step:
+#             total += 1
+#             if accepted[i]:
+#                 passed += 1
 
-    if total > 0:
-        pt_vals.append(p + step/2)
-        acc_vals.append(passed / total)
-        err = np.sqrt(p * (1 - p) / total)
+#     if total > 0:
+#         pt_vals.append(p + step/2)
+#         acc_vals.append(passed / total)
+#         err = np.sqrt(p * (1 - p) / total)
 
-    p += step
+#     p += step
 
 
-plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
-plt.xlabel("true pt (GeV)")
-plt.title("Model 2: Classifier acceptance as a function of pT")
-plt.ylabel("classifier acceptance pT > |0.2| GeV")
-plt.ylim(0,1)
-plt.show()
+# plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
+# plt.xlabel("true pt (GeV)")
+# plt.title("Model 2: Classifier acceptance as a function of pT")
+# plt.ylabel("classifier acceptance pT > |0.2| GeV")
+# plt.ylim(0,1)
+# plt.show()
