@@ -19,3 +19,45 @@ X_train, X_test, y_train, y_test = train_test_split(
 bst = XGBClassifier(n_estimators=2, max_depth=2, learning_rate=1, objective='binary:logistic')
 bst.fit(X_train, y_train)
 preds = bst.predict(X_test)
+
+preds = model.predict(X_test)
+pred_class = np.argmax(preds, axis=1)
+
+print("pred_class counts:", np.bincount(pred_class, minlength=3))
+print("overall acceptance (pred==0):", np.mean(pred_class == 0))
+
+accepted = (pred_class == 0)
+
+pt_vals = []
+acc_vals = []
+
+step = 0.2   # GeV
+pmin = pt_test.min()
+pmax = pt_test.max()
+
+p = pmin
+while p < pmax:
+
+    total = 0
+    passed = 0
+
+    for i in range(len(pt_test)):
+        if p <= pt_test[i] < p + step:
+            total += 1
+            if accepted[i]:
+                passed += 1
+
+    if total > 0:
+        pt_vals.append(p + step/2)
+        acc_vals.append(passed / total)
+        err = np.sqrt(p * (1 - p) / total)
+
+    p += step
+
+
+plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
+plt.xlabel("true pt (GeV)")
+plt.title("Model 2: Classifier acceptance as a function of pT")
+plt.ylabel("classifier acceptance pT > |0.2| GeV")
+plt.ylim(0,1)
+plt.show()
