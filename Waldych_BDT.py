@@ -24,7 +24,7 @@ bst.fit(X_train, y_train)
 preds = bst.predict(X_test)
 print(type(preds))
 
-pred_class = np.argmax(preds, axis=1) #returns the indices of the maximum values along the rows (axis=0 gives col)
+pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
 print(pred_class)
 
 print("pred_class counts:", np.bincount(pred_class, minlength=3))
