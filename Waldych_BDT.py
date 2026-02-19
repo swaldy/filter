@@ -36,9 +36,9 @@ params = {
 model = xgb.train(
     params,
     dtrain,
-    num_boost_round=2000,
+    num_boost_round=200,
     evals=[(dtrain, "train"), (dtest, "test")],
-    early_stopping_rounds=100,
+    early_stopping_rounds=10,
     verbose_eval=10  # Print progress every 10 iterations
 )
 
