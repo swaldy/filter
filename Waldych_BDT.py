@@ -42,48 +42,29 @@ model = xgb.train(
     verbose_eval=10  # Print progress every 10 iterations
 )
 
-preds = model.predict(dtrain)
-print(preds)
-print(type(preds))
+#  Predictions
+y_pred_proba = model.predict(dtest)  # Probabilities
+y_pred = (y_pred_proba > 0.5).astype(int)  # Convert to binary labels
 
-pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
-print(pred_class)
+#  Evaluation
+accuracy = accuracy_score(y_test, y_pred)
+auc_score = roc_auc_score(y_test, y_pred_proba)
 
-print("pred_class counts:", np.bincount(pred_class))
-print("overall acceptance (pred==0):", np.mean(pred_class == 0))
+print(f"Accuracy: {accuracy:.4f}")
+print(f"AUC Score: {auc_score:.4f}")
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-# accepted = (pred_class == 0)
+#  Plot & Save ROC Curve
+fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
 
-# pt_vals = []
-# acc_vals = []
+plt.figure(figsize=(3.5, 2.5))
+plt.plot(fpr, tpr, label=f'XGBoost (AUC = {auc_score:.3f})')
+plt.plot([0, 1], [0, 1], 'k--')  # Diagonal line for random chance
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.legend()
+plt.grid()
+plt.savefig("roc_curve.png", dpi=300, bbox_inches="tight")  #  Save as PNG
+plt.close()  #  Close the figure to avoid display
 
-# step = 0.2   # GeV
-# pmin = pt_test.min()
-# pmax = pt_test.max()
-
-# p = pmin
-# while p < pmax:
-
-#     total = 0
-#     passed = 0
-
-#     for i in range(len(pt_test)):
-#         if p <= pt_test[i] < p + step:
-#             total += 1
-#             if accepted[i]:
-#                 passed += 1
-
-#     if total > 0:
-#         pt_vals.append(p + step/2)
-#         acc_vals.append(passed / total)
-#         err = np.sqrt(p * (1 - p) / total)
-
-#     p += step
-
-
-# plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
-# plt.xlabel("true pt (GeV)")
-# plt.title("Model 2: Classifier acceptance as a function of pT")
-# plt.ylabel("classifier acceptance pT > |0.2| GeV")
-# plt.ylim(0,1)
-# plt.show()
