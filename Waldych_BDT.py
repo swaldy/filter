@@ -26,11 +26,11 @@ dtrain = xgb.DMatrix(X_train, label=y_train)
 dtest = xgb.DMatrix(X_test, label=y_test)
 
 params = {
-    "objective": "multi:softmax",  # "softmax option produces a trained Booster object whose predict method returns a 1d array of predicted labels, whereas the softprob option produces a trained Booster object whose predict method returns a 2d array of predicted probabilities"
+    "objective": "multi:softprob",  # "softmax option produces a trained Booster object whose predict method returns a 1d array of predicted labels, whereas the softprob option produces a trained Booster object whose predict method returns a 2d array of predicted probabilities"
     "eval_metric": "auc",  # AUC for evaluation
     "max_depth": 5,  # Tree depth
     "eta": 0.05,  # Learning rate
-    "random_state": 42,  # Reproducibility
+    "seed": 42,  # Reproducibility
     "num_class":3 #three classes...0,1,2 
 }
 
@@ -45,11 +45,16 @@ model = xgb.train(
 
 #  Predictions
 y_pred_proba = model.predict(dtest)  # Probabilities
-y_pred = (y_pred_proba > 0.5).astype(int)  # Convert to binary labels
+y_pred = y_pred_proba.argmax(axis=1)
 
 #  Evaluation
 accuracy = accuracy_score(y_test, y_pred)
-auc_score = roc_auc_score(y_test, y_pred_proba, multi_class="ovr")
+auc_score = roc_auc_score(
+    y_test,
+    y_pred_proba,
+    multi_class="ovr",
+    average="macro"
+)
 
 print(f"Accuracy: {accuracy:.4f}")
 print(f"AUC Score: {auc_score:.4f}")
