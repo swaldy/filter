@@ -25,11 +25,12 @@ dtrain = xgb.DMatrix(X_train, label=y_train)
 dtest = xgb.DMatrix(X_test, label=y_test)
 
 params = {
-    "objective": "binary:logistic",  # Binary classification
+    "objective": "multi:softmax",  # "softmax option produces a trained Booster object whose predict method returns a 1d array of predicted labels, whereas the softprob option produces a trained Booster object whose predict method returns a 2d array of predicted probabilities"
     "eval_metric": "auc",  # AUC for evaluation
     "max_depth": 5,  # Tree depth
     "eta": 0.05,  # Learning rate
     "random_state": 42,  # Reproducibility
+    "num_class":3 #three classes...0,1,2 
 }
 
 model = xgb.train(
