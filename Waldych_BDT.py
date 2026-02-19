@@ -42,7 +42,7 @@ model = xgb.train(
     verbose_eval=10  # Print progress every 10 iterations
 )
 
-preds = model.predict(X_test)
+preds = model.predict(dtrain)
 pred_class = np.argmax(preds, axis=1) #returns the indices of the maximum values along the rows (axis=0 gives col)
 print(pred_class)
 
