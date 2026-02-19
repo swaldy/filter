@@ -134,6 +134,8 @@ plt.close()
 
 # --- PREDICTIONS ---
 preds = model.predict(X_test)
+print(type(preds))
+print(preds)
 pred_class = np.argmax(preds, axis=1)
 
 print("pred_class counts:", np.bincount(pred_class, minlength=3))
