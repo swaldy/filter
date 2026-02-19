@@ -1,3 +1,4 @@
+import xgboost as xgb
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -17,16 +18,38 @@ y = dfy.values
 real_pt=pt.values
 
 X_train, X_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.2, shuffle=True)
+    x, y, test_size=0.2, random_state=42)
 
-bst = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.001, objective='binary:logistic')
-bst.fit(X_train, y_train)
-preds = bst.predict(X_test)
-print(type(preds))
-print(preds)
+#  Convert data to XGBoost DMatrix format
+dtrain = xgb.DMatrix(X_train, label=y_train)
+dtest = xgb.DMatrix(X_test, label=y_test)
 
-pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
-print(pred_class)
+params = {
+    "objective": "binary:logistic",  # Binary classification
+    "eval_metric": "auc",  # AUC for evaluation
+    "max_depth": 5,  # Tree depth
+    "eta": 0.05,  # Learning rate
+    "random_state": 42,  # Reproducibility
+}
+
+model = xgb.train(
+    params,
+    dtrain,
+    num_boost_round=2000,
+    evals=[(dtrain, "train"), (dtest, "test")],
+    early_stopping_rounds=100,
+    verbose_eval=10  # Print progress every 10 iterations
+)
+
+
+# bst = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.001, objective='binary:logistic')
+# bst.fit(X_train, y_train)
+# preds = bst.predict(X_test)
+# print(type(preds))
+# print(preds)
+
+# pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
+# print(pred_class)
 
 # print("pred_class counts:", np.bincount(pred_class, minlength=3))
 # print("overall acceptance (pred==0):", np.mean(pred_class == 0))
