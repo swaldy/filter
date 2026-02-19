@@ -61,14 +61,19 @@ print(f"AUC Score: {auc_score:.4f}")
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 #  Plot & Save ROC Curve
-fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+signal_class = 0
+
+y_test_bin = (y_test == signal_class).astype(int)
+y_score = y_pred_proba[:, signal_class]
+
+fpr, tpr, _ = roc_curve(y_test_bin, y_score)
 
 plt.figure(figsize=(3.5, 2.5))
 plt.plot(fpr, tpr, label=f'XGBoost (AUC = {auc_score:.3f})')
 plt.plot([0, 1], [0, 1], 'k--')  # Diagonal line for random chance
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
-plt.title("ROC Curve")
+plt.title("ROC Curve: High pT v (both) low pT")
 plt.legend()
 plt.grid()
 plt.savefig("roc_curve.png", dpi=300, bbox_inches="tight")  #  Save as PNG
