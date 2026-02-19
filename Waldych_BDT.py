@@ -43,10 +43,13 @@ model = xgb.train(
 )
 
 preds = model.predict(dtrain)
+print(preds)
+print(type(preds))
+
 pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
 print(pred_class)
 
-print("pred_class counts:", np.bincount(pred_class, minlength=3))
+print("pred_class counts:", np.bincount(pred_class)
 print("overall acceptance (pred==0):", np.mean(pred_class == 0))
 
 # accepted = (pred_class == 0)
