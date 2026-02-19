@@ -43,17 +43,11 @@ model = xgb.train(
 )
 
 
-# bst = XGBClassifier(n_estimators=200, max_depth=5, learning_rate=0.001, objective='binary:logistic')
-# bst.fit(X_train, y_train)
-# preds = bst.predict(X_test)
-# print(type(preds))
-# print(preds)
+pred_class = np.argmax(preds, axis=1) #returns the indices of the maximum values along the rows (axis=0 gives col)
+print(pred_class)
 
-# pred_class = np.argmax(preds, axis=0) #returns the indices of the maximum values along the rows (axis=0 gives col)
-# print(pred_class)
-
-# print("pred_class counts:", np.bincount(pred_class, minlength=3))
-# print("overall acceptance (pred==0):", np.mean(pred_class == 0))
+print("pred_class counts:", np.bincount(pred_class, minlength=3))
+print("overall acceptance (pred==0):", np.mean(pred_class == 0))
 
 # accepted = (pred_class == 0)
 
