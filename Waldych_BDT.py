@@ -49,7 +49,7 @@ y_pred = (y_pred_proba > 0.5).astype(int)  # Convert to binary labels
 
 #  Evaluation
 accuracy = accuracy_score(y_test, y_pred)
-auc_score = roc_auc_score(y_test, y_pred_proba)
+auc_score = roc_auc_score(y_test, y_pred_proba, multi_class="ovr")
 
 print(f"Accuracy: {accuracy:.4f}")
 print(f"AUC Score: {auc_score:.4f}")
