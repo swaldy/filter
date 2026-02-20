@@ -5,6 +5,9 @@ from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve, classifica
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import json
+
+models_dir = '/eos/user/s/swaldych/smart_pix/labels/models'
 
 sensor_geom = "50x12P5x150_0fb"
 threshold = 0.2 #in GeV
@@ -59,6 +62,10 @@ auc_score = roc_auc_score(
 print(f"Accuracy: {accuracy:.4f}")
 print(f"AUC Score: {auc_score:.4f}")
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+model.save_model("xgboost_model.json")
+
+print("Model saved to xgboost_model.json")
 
 #  Plot & Save ROC Curve
 signal_class = 0
