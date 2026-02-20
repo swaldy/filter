@@ -2,7 +2,7 @@ import json
 import sys
 
 if len(sys.argv) != 2:
-    print("Usage: python count_xgb_nodes.py /eos/user/s/swaldych/smart_pix/labels/models/xgboost_trees.json")
+    print("Usage: python post_bdt.py /eos/user/s/swaldych/smart_pix/labels/models/xgboost_trees.json")
     sys.exit(1)
 
 json_file = sys.argv[1]
