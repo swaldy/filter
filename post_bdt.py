@@ -1,11 +1,12 @@
 import json
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: python post_bdt.py /eos/user/s/swaldych/smart_pix/labels/models/xgboost_trees.json")
-    sys.exit(1)
+import json
 
-json_file = sys.argv[1]
+
+json_file = "/eos/user/s/swaldych/smart_pix/labels/models/xgboost_model_50x12P5x150_0fb_0P2thresh.json"
+
+print("Loading:", json_file)
 
 # Load trees
 with open(json_file, "r") as f:
