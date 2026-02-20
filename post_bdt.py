@@ -1,8 +1,6 @@
 import json
 import sys
 
-import json
-
 
 JSON_FILE = "/eos/user/s/swaldych/smart_pix/labels/models/xgboost_model_50x12P5x150_0fb_0P2thresh.json"
 NUM_CLASS = 3
