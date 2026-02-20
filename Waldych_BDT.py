@@ -63,7 +63,7 @@ print(f"Accuracy: {accuracy:.4f}")
 print(f"AUC Score: {auc_score:.4f}")
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-model.save_model("xgboost_model.json")
+model.save_model("models_dir/xgboost_model.json")
 
 print("Model saved to xgboost_model.json")
 
