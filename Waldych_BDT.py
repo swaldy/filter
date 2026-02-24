@@ -21,8 +21,8 @@ x = dfx.values
 y = dfy.values
 real_pt=pt.values
 
-X_train, X_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test, pt_train, pt_test = train_test_split(
+    X, y, real_pt, test_size=0.2, shuffle=True, random_state=42) #we are saying split arrays the same way
 
 #  Convert data to XGBoost DMatrix format
 dtrain = xgb.DMatrix(X_train, label=y_train)
