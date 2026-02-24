@@ -172,10 +172,11 @@ while p < pmax:
 
 plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
 plt.xlabel("true pt (GeV)")
-plt.title("Model 2: Classifier acceptance as a function of pT")
+plt.title("NN Model 2: Classifier acceptance as a function of pT")
 plt.ylabel("classifier acceptance pT > |0.2| GeV")
 plt.ylim(0,1)
-plt.show()
+plt.savefig("/eos/user/s/swaldych/smart_pix/labels/models/NN_class_acceptance.png", dpi=300, bbox_inches="tight")
+plt.close()
 
 pd.DataFrame(pred_class, columns=["predict"]).to_csv(
     f"{results_dir}/pred_class_{tag}.csv", index=False
