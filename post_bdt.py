@@ -52,8 +52,8 @@ print("Min nodes in one tree:", min(nodes_per_tree))
 pred_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pred_class_NN_50x12P5x150_0fb_0P2thresh.csv')
 pred_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pred_class_BDT_50x12P5x150_0fb_0P2thresh.csv')
 
-pt_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_NN_50x12P5x150_0fb_0P2thresh.csv')
-pt_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_BDT_50x12P5x150_0fb_0P2thresh.csv')
+pt_test_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_NN_50x12P5x150_0fb_0P2thresh.csv')
+pt_test_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_BDT_50x12P5x150_0fb_0P2thresh.csv')
 
 accepted_NN  = (pred_NN == 0)
 accepted_BDT = (pred_BDT == 0)
@@ -89,8 +89,8 @@ def acceptance_vs_pt(pt_test, accepted, step=0.2):
 
     return np.array(pt_vals), np.array(acc_vals), np.array(err_vals)
 
-pt_NN, acc_NN, err_NN = acceptance_vs_pt(pt_test, accepted_NN)
-pt_BDT, acc_BDT, err_BDT = acceptance_vs_pt(pt_test, accepted_BDT)
+pt_NN, acc_NN, err_NN = acceptance_vs_pt(pt_test_NN, accepted_NN)
+pt_BDT, acc_BDT, err_BDT = acceptance_vs_pt(pt_test_BDT, accepted_BDT)
 
 plt.errorbar(pt_NN, acc_NN, err_NN, fmt='o', markersize=3, label='NN')
 plt.errorbar(pt_BDT, acc_BDT, err_BDT, fmt='s', markersize=3, label='BDT')
