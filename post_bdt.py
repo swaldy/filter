@@ -52,6 +52,9 @@ print("Min nodes in one tree:", min(nodes_per_tree))
 pred_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pred_class_NN_50x12P5x150_0fb_0P2thresh.csv')
 pred_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pred_class_BDT_50x12P5x150_0fb_0P2thresh.csv')
 
+pt_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_NN_50x12P5x150_0fb_0P2thresh.csv')
+pt_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_BDT_50x12P5x150_0fb_0P2thresh.csv')
+
 accepted_NN  = (pred_NN == 0)
 accepted_BDT = (pred_BDT == 0)
 
