@@ -92,6 +92,10 @@ pd.DataFrame(y_pred, columns=["predict"]).to_csv(
     f"{results_dir}/pred_class_BDT_{tag}.csv", index=False
 )
 
+pd.DataFrame(pt_test, columns=["pt_test"]).to_csv(
+    f"{results_dir}/pt_test_BDT_{tag}.csv", index=False
+)
+
 #-----------------------------------------------------------
 
 #  Evaluation
