@@ -182,6 +182,10 @@ pd.DataFrame(pred_class, columns=["predict"]).to_csv(
     f"{results_dir}/pred_class_NN_{tag}.csv", index=False
 )
 
+pd.DataFrame(pt_test, columns=["pt_test"]).to_csv(
+    f"{results_dir}/pt_test_NN_{tag}.csv", index=False
+)
+
 pd.DataFrame(y_test, columns=["true"]).to_csv(
     f"{results_dir}/testResults_{tag}.csv", index=False
 )
