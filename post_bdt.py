@@ -2,6 +2,7 @@ import json
 import sys
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 JSON_FILE = "/eos/user/s/swaldych/smart_pix/labels/models/xgboost_model_50x12P5x150_0fb_0P2thresh.json"
