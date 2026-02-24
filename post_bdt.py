@@ -55,35 +55,35 @@ pred_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pred_class_
 pt_test_NN = pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_NN_50x12P5x150_0fb_0P2thresh.csv')
 pt_test_BDT= pd.read_csv('/eos/user/s/swaldych/smart_pix/labels/results/pt_test_BDT_50x12P5x150_0fb_0P2thresh.csv')
 
+pt_test_NN= np.asarray(pt_test_NN).ravel().astype(float)
+pt_test_BDT= np.asarray(pt_test_BDT).ravel().astype(float)
+
 accepted_NN  = (pred_NN == 0)
 accepted_BDT = (pred_BDT == 0)
 
 def acceptance_vs_pt(pt_test, accepted, step=0.2):
 
-    pt_vals = []
-    acc_vals = []
-    err_vals = []
+    pt_test = np.asarray(pt_test).ravel().astype(float)
+    accepted = np.asarray(accepted).ravel().astype(bool)
 
-    pmin = pt_test.min()
-    pmax = pt_test.max()
+    pt_vals, acc_vals, err_vals = [], [], []
+
+    pmin = float(np.min(pt_test))
+    pmax = float(np.max(pt_test))
 
     p = pmin
     while p < pmax:
 
-        total = 0
-        passed = 0
-
-        for i in range(len(pt_test)):
-            if p <= pt_test[i] < p + step:
-                total += 1
-                if accepted[i]:
-                    passed += 1
+        mask = (pt_test >= p) & (pt_test < p + step)
+        total = int(np.sum(mask))
 
         if total > 0:
+            passed = int(np.sum(accepted[mask]))
             acc = passed / total
+
             pt_vals.append(p + step/2)
             acc_vals.append(acc)
-            err_vals.append(np.sqrt(acc*(1-acc)/total))
+            err_vals.append(np.sqrt(acc * (1 - acc) / total))
 
         p += step
 
