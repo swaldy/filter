@@ -87,6 +87,10 @@ plt.ylim(0,1)
 plt.savefig("/eos/user/s/swaldych/smart_pix/labels/models/BDT_class_acceptance.png", dpi=300, bbox_inches="tight")
 plt.close()
 
+pd.DataFrame(y_pred, columns=["predict"]).to_csv(
+    f"{results_dir}/pred_class_BDT_{tag}.csv", index=False
+)
+
 #-----------------------------------------------------------
 
 #  Evaluation
