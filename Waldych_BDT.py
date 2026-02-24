@@ -45,10 +45,48 @@ model = xgb.train(
     early_stopping_rounds=10,
     verbose_eval=10  # Print progress every 10 iterations
 )
-
+#----------------------------------------------------------
 #  Predictions
 y_pred_proba = model.predict(dtest)  # Probabilities
 y_pred = y_pred_proba.argmax(axis=1)
+
+accepted = (y_pred == 0)
+
+pt_vals = []
+acc_vals = []
+
+step = 0.2   # GeV
+pmin = pt_test.min()
+pmax = pt_test.max()
+
+p = pmin
+while p < pmax:
+
+    total = 0
+    passed = 0
+
+    for i in range(len(pt_test)):
+        if p <= pt_test[i] < p + step:
+            total += 1
+            if accepted[i]:
+                passed += 1
+
+    if total > 0:
+        pt_vals.append(p + step/2)
+        acc_vals.append(passed / total)
+        err = np.sqrt(p * (1 - p) / total)
+
+    p += step
+
+
+plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
+plt.xlabel("true pt (GeV)")
+plt.title("Model 2: Classifier acceptance as a function of pT")
+plt.ylabel("classifier acceptance pT > |0.2| GeV")
+plt.ylim(0,1)
+plt.show()
+
+#-----------------------------------------------------------
 
 #  Evaluation
 accuracy = accuracy_score(y_test, y_pred)
@@ -85,4 +123,6 @@ plt.legend()
 plt.grid()
 plt.savefig("roc_curve.png", dpi=300, bbox_inches="tight")  #  Save as PNG
 plt.close()  #  Close the figure to avoid display
+
+#------------------------------------------------
 
