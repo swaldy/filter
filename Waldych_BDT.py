@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import json
 
 models_dir = '/eos/user/s/swaldych/smart_pix/labels/models'
+results_dir = '/eos/user/s/swaldych/smart_pix/labels/results'
 
 sensor_geom = "50x12P5x150_0fb"
 threshold = 0.2 #in GeV
