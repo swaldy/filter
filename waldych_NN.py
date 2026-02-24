@@ -179,7 +179,7 @@ plt.savefig("/eos/user/s/swaldych/smart_pix/labels/models/NN_class_acceptance.pn
 plt.close()
 
 pd.DataFrame(pred_class, columns=["predict"]).to_csv(
-    f"{results_dir}/pred_class_{tag}.csv", index=False
+    f"{results_dir}/pred_class_NN_{tag}.csv", index=False
 )
 
 pd.DataFrame(y_test, columns=["true"]).to_csv(
