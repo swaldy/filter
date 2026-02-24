@@ -78,13 +78,14 @@ while p < pmax:
 
     p += step
 
-
+plt.figure()
 plt.errorbar(pt_vals, acc_vals,err,fmt='o',markersize=3)
 plt.xlabel("true pt (GeV)")
-plt.title("Model 2: Classifier acceptance as a function of pT")
+plt.title("BDT: Classifier acceptance as a function of pT")
 plt.ylabel("classifier acceptance pT > |0.2| GeV")
 plt.ylim(0,1)
-plt.show()
+plt.savefig("/eos/user/s/swaldych/smart_pix/labels/models/BDT_class_acceptance.png", dpi=300, bbox_inches="tight")
+plt.close()
 
 #-----------------------------------------------------------
 
@@ -121,7 +122,7 @@ plt.ylabel("True Positive Rate")
 plt.title("ROC Curve: High pT v (both) low pT")
 plt.legend()
 plt.grid()
-plt.savefig("roc_curve.png", dpi=300, bbox_inches="tight")  #  Save as PNG
+plt.savefig("/eos/user/s/swaldych/smart_pix/labels/models/BDT_roc_curve.png", dpi=300, bbox_inches="tight")  #  Save as PNG
 plt.close()  #  Close the figure to avoid display
 
 #------------------------------------------------
