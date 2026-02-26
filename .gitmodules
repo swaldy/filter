@@ -1,3 +1,0 @@
-[submodule "pretrain-data-prep"]
-	path = pretrain-data-prep
-	url = https://github.com/smart-pix/pretrain-data-prep.git
