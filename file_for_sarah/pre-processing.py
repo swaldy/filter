@@ -29,35 +29,71 @@ for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     output_file.write("Train dataset prod. beginning: "+str(threshold)+" thresh"+"\n")
     dirtrain = '/eos/user/s/swaldych/smartpixels/'+train_dataset_name+'/'+train_dataset_name+'_'+sensor_geom+'_parquets/unflipped/'
     print('looking for files:',dirtrain)
-    trainlabels = []
-    trainrecons = []
 
-    iter=0
-    suffix = 16400
-    for filepath in glob.iglob(dirtrain+'labels*.parquet'):
-        iter+=3
-    output_file.write(str(iter)+" files present in directory."+"\n")
-    for i in range(int(iter/3)):
-            trainlabels.append(pd.read_parquet(dirtrain+'labels_d'+str(suffix+i+1)+'.parquet'))
-            trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
+    label_files = sorted(glob.glob(os.path.join(dirtrain, 'labels*.parquet')))
+    recon_files = sorted(glob.glob(os.path.join(dirtrain, 'recon2D*.parquet')))
+
+    output_file.write(f"{len(label_files)} label files present in directory.\n")
+    output_file.write(f"{len(recon_files)} recon files present in directory.\n")
+
+    if not label_files:
+        raise FileNotFoundError(f"No label files found in {dirtrain}")
+    if not recon_files:
+        raise FileNotFoundError(f"No recon files found in {dirtrain}")
+
+    trainlabels = [pd.read_parquet(f) for f in label_files]
+    trainrecons = [pd.read_parquet(f) for f in recon_files]
+
     trainlabels_csv = pd.concat(trainlabels, ignore_index=True)
     trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
 
-    iter_0, iter_1, iter_2 = 0, 0, 0
-    iter_rem = 0
-    for iter, row in trainlabels_csv.iterrows():
-        if(abs(row['pt'])>threshold):
-            iter_0+=1
-        elif(-1*threshold<=row['pt']<0):
-            iter_1+=1
-        elif(0<row['pt']<=threshold):
-            iter_2+=1
+    iter_0, iter_1, iter_2, iter_rem = 0, 0, 0, 0
+
+    for _, row in trainlabels_csv.iterrows():
+        if abs(row['pt']) > threshold:
+            iter_0 += 1
+        elif -threshold <= row['pt'] < 0:
+            iter_1 += 1
+        elif 0 < row['pt'] <= threshold:
+            iter_2 += 1
         else:
-            iter_rem+=1
-    output_file.write("iter_0: "+str(iter_0)+"\n")
-    output_file.write("iter_1: "+str(iter_1)+"\n")
-    output_file.write("iter_2: "+str(iter_2)+"\n")
-    output_file.write("iter_rem: "+str(iter_rem)+"\n")
+            iter_rem += 1
+
+    output_file.write(f"iter_0: {iter_0}\n")
+    output_file.write(f"iter_1: {iter_1}\n")
+    output_file.write(f"iter_2: {iter_2}\n")
+    output_file.write(f"iter_rem: {iter_rem}\n")
+
+output_file.close()
+    # trainlabels = []
+    # trainrecons = []
+
+    # iter=0
+    # suffix = 16400
+    # for filepath in glob.iglob(dirtrain+'labels*.parquet'):
+    #     iter+=3
+    # output_file.write(str(iter)+" files present in directory."+"\n")
+    # for i in range(int(iter/3)):
+    #         trainlabels.append(pd.read_parquet(dirtrain+'labels_d'+str(suffix+i+1)+'.parquet'))
+    #         trainrecons.append(pd.read_parquet(dirtrain+'recon2D_d'+str(suffix+i+1)+'.parquet'))
+    # trainlabels_csv = pd.concat(trainlabels, ignore_index=True)
+    # trainrecons_csv = pd.concat(trainrecons, ignore_index=True)
+
+    # iter_0, iter_1, iter_2 = 0, 0, 0
+    # iter_rem = 0
+    # for iter, row in trainlabels_csv.iterrows():
+    #     if(abs(row['pt'])>threshold):
+    #         iter_0+=1
+    #     elif(-1*threshold<=row['pt']<0):
+    #         iter_1+=1
+    #     elif(0<row['pt']<=threshold):
+    #         iter_2+=1
+    #     else:
+    #         iter_rem+=1
+    # output_file.write("iter_0: "+str(iter_0)+"\n")
+    # output_file.write("iter_1: "+str(iter_1)+"\n")
+    # output_file.write("iter_2: "+str(iter_2)+"\n")
+    # output_file.write("iter_rem: "+str(iter_rem)+"\n")
 
     plt.hist(trainlabels_csv['pt'], bins=100)
     plt.title('pT of all events')
