@@ -20,16 +20,16 @@ from tensorflow.keras.optimizers import Adam
 size = '12P5'
 threshold = 0.5
 sensor_geom = '50x'+size
-df1 = pd.read_csv('./dataset_2s/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+df1 = pd.read_csv('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
 df1
 
-df2 = pd.read_csv('./dataset_2s/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+df2 = pd.read_csv('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
 df2
 
-df3 = pd.read_csv('./dataset_2s/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+df3 = pd.read_csv('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
 df3
 
-df4 = pd.read_csv('./dataset_2s/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+df4 = pd.read_csv('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
 df4
 
 X_train = df1.values
@@ -85,7 +85,7 @@ plt.title('Training and validation loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.savefig('./results_2s/loss_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
+plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/loss_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
 
 acc = history.history['sparse_categorical_accuracy']
 val_acc = history.history['val_sparse_categorical_accuracy']
@@ -97,15 +97,15 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
 #np.max(val_acc)
-plt.savefig('./results_2s/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
+plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results_2/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
 plt.show()
 
 preds = model.predict(X_test) 
 predictionsFiles =np.argmax(preds, axis=1)
 
-pd.DataFrame(predictionsFiles).to_csv("./results_2s/predictionsFiles_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv",header='predict', index=False)
+pd.DataFrame(predictionsFiles).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/predictionsFiles_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv",header='predict', index=False)
 
-pd.DataFrame(y_test).to_csv("./results_2s/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv",header='true', index=False)
+pd.DataFrame(y_test).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv",header='true', index=False)
 plt.hist(y_test, bins=30)
 plt.show()
 
@@ -120,6 +120,6 @@ print(f"Confusion matrix:\n{disp.confusion_matrix}")
 plt.savefig('./results_2s/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.png')
 plt.show()
 
-model.save_weights('./models_2s/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:])
+model.save_weights('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:])
 
-model.save('./models_2s/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.h5')
+model.save('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.h5')
