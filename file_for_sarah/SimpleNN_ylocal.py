@@ -98,7 +98,7 @@ plt.ylabel('Accuracy')
 plt.legend()
 #np.max(val_acc)
 plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
-plt.show()
+
 
 preds = model.predict(X_test) 
 predictionsFiles =np.argmax(preds, axis=1)
@@ -107,7 +107,8 @@ pd.DataFrame(predictionsFiles).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s
 
 pd.DataFrame(y_test).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv",header='true', index=False)
 plt.hist(y_test, bins=30)
-plt.show()
+plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/hist_of_y_test'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
+
 
 score = model.evaluate(X_test, y_test, verbose=0)
 print("Test loss:", score[0])
@@ -117,8 +118,8 @@ from sklearn import datasets, svm, metrics
 disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predictionsFiles)
 disp.figure_.suptitle("Multiclassifier Confusion Matrix")
 print(f"Confusion matrix:\n{disp.confusion_matrix}")
-plt.savefig('./results_2s/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.png')
-plt.show()
+plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.png')
+
 
 model.save_weights('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:])
 
