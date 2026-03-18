@@ -27,7 +27,7 @@ for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
 
     output_file.write("=========="+"\n")
     output_file.write("Train dataset prod. beginning: "+str(threshold)+" thresh"+"\n")
-    dirtrain = '/uscms/home/dshekar/nobackup/smartpixels/'+train_dataset_name+'/'+train_dataset_name+'_'+sensor_geom+'_parquets/unflipped/'
+    dirtrain = '/eos/user/s/swaldych/smartpixels/'+train_dataset_name+'/'+train_dataset_name+'_'+sensor_geom+'_parquets/unflipped/'
     # /uscms/home/dshekar/nobackup/smartpixels/dataset_2s/dataset_2s_50x12P5_parquets/unflipped
     trainlabels = []
     trainrecons = []
