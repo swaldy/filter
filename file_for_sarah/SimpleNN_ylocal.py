@@ -17,7 +17,7 @@ from pandas import read_csv
 import math
 from tensorflow.keras.optimizers import Adam
 
-size = '10'
+size = '12P5'
 threshold = 0.5
 sensor_geom = '50x'+size
 df1 = pd.read_csv('./dataset_2s/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
