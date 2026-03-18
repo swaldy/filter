@@ -23,7 +23,7 @@ for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     train_dataset_name = 'dataset_3s' # for train datasets
     test_dataset_name = 'dataset_2s' # for location of test (physical pT) datasets
     # dataset_savedir = 'dataset_9s'
-    dataset_savedir = f'dataset_3s_{noise_threshold}NoiseThresh' # for save loc of final datasets
+    dataset_savedir = f'/eos/user/s/swaldych/smart_pix/dataset_3s_{noise_threshold}NoiseThresh' # for save loc of final datasets
 
     output_file.write("=========="+"\n")
     output_file.write("Train dataset prod. beginning: "+str(threshold)+" thresh"+"\n")
