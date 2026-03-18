@@ -158,7 +158,7 @@ for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     # TEST DATASET PROD
     output_file.write("=========="+"\n")
     output_file.write("Test dataset prod. beginning: "+str(threshold)+" thresh"+"\n")
-    dirtest = '/uscms/home/dshekar/nobackup/smartpixels/'+test_dataset_name+'/'+test_dataset_name+'_'+sensor_geom+'_parquets/unflipped/'
+    dirtest = '/eos/user/s/swaldych/smartpixels/'+test_dataset_name+'/'+test_dataset_name+'_'+sensor_geom+'_parquets/unflipped/'
     # /uscms/home/dshekar/nobackup/smartpixels/dataset_2s/dataset_2s_50x12P5_parquets/unflipped
     testlabels = []
     testrecons = []
