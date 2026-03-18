@@ -121,6 +121,6 @@ print(f"Confusion matrix:\n{disp.confusion_matrix}")
 plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.png')
 
 
-model.save_weights('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:])
+model.save_weights('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.weights.h5')
 
 model.save('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/models/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'.h5')
