@@ -26,9 +26,9 @@ sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
 # dataset_name = 'dataset_7s'
 # results_dir = 'results_7s'
 # models_dir = 'models_7s'
-dataset_name = 'dataset_3s'
-results_dir = 'results_3s'
-models_dir = 'models_3s'
+dataset_name = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh'
+results_dir = 'results'
+models_dir = 'models'
 thresholds = [0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
 prime_num = [2,3,5,7,11,13,17,19,23,29]
 for run_iter in range(10):
@@ -38,13 +38,13 @@ for run_iter in range(10):
             sensor_geom = size_iter
             print("=============================")
             print("Run "+str(run_iter)+": Training model for ",sensor_geom," at pT boundary = ",threshold)
-            df1 = pd.read_csv('./'+dataset_name+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df1 = pd.read_csv(dataset_name+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
             print("Shape of train dataset = ",df1.shape)
-            df2 = pd.read_csv('./'+dataset_name+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df2 = pd.read_csv(dataset_name+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
             print("Shape of train-label set = ",df2.shape)
-            df3 = pd.read_csv('./'+dataset_name+'/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df3 = pd.read_csv(dataset_name+'/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
             print("Shape of test dataset = ",df3.shape)
-            df4 = pd.read_csv('./'+dataset_name+'/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df4 = pd.read_csv(dataset_name+'/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
             print("Shape of test-label set = ",df4.shape)
             X_train = df1.values
             X_test = df3.values
@@ -91,7 +91,7 @@ for run_iter in range(10):
             plt.xlabel('Epochs')
             plt.ylabel('Loss')
             plt.legend()
-            plt.savefig('./'+results_dir+'/loss_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
+            plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'+results_dir+'/loss_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
             plt.close()
             acc = history.history['sparse_categorical_accuracy']
             val_acc = history.history['val_sparse_categorical_accuracy']
@@ -103,12 +103,12 @@ for run_iter in range(10):
             plt.ylabel('Accuracy')
             plt.legend()
             #np.max(val_acc)
-            plt.savefig('./'+results_dir+'/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
+            plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'+results_dir+'/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.png')
             plt.close()
             preds = model.predict(X_test) 
             predictionsFiles =np.argmax(preds, axis=1)
-            pd.DataFrame(predictionsFiles).to_csv("./"+results_dir+"/predictionsFiles_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='predict', index=False)
-            pd.DataFrame(y_test).to_csv("./"+results_dir+"/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='true', index=False)
+            pd.DataFrame(predictionsFiles).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/"+results_dir+"/predictionsFiles_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='predict', index=False)
+            pd.DataFrame(y_test).to_csv("/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/"+results_dir+"/testResults_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh_run"+str(run_iter)+".csv",header='true', index=False)
             plt.hist(y_test, bins=30)
             plt.show()
             plt.close()
@@ -119,8 +119,8 @@ for run_iter in range(10):
             disp = metrics.ConfusionMatrixDisplay.from_predictions(y_test, predictionsFiles)
             disp.figure_.suptitle("Multiclassifier Confusion Matrix")
             print(f"Confusion matrix:\n{disp.confusion_matrix}")
-            plt.savefig('./'+results_dir+'/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.png')
+            plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'+results_dir+'/confusionMatrix_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.png')
             plt.show()
             plt.close()
-            model.save_weights('./'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.weights.h5')
-            model.save('./'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.h5')
+            model.save_weights('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.weights.h5')
+            model.save('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'+models_dir+'/trained_model_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'_run'+str(run_iter)+'.h5')
