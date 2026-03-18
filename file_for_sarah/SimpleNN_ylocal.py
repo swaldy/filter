@@ -97,7 +97,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
 #np.max(val_acc)
-plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results_2/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
+plt.savefig('/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results/accuracy_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.png')
 plt.show()
 
 preds = model.predict(X_test) 
