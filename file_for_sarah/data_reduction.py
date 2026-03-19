@@ -7,9 +7,9 @@ import pandas as pd
 import glob
 import numpy as np
 
-results_dir = 'results_3s'
+results_dir = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results'
 dataset_name = 'dataset_3s'
-f = open('./'+results_dir+'/final_results.txt', "w+")
+f = open(results_dir+'/final_results.txt', "w+")
 f.seek(0)
 f.truncate()
 # mergePosNeg = pd.concat([big_df_labels, big_df_labels2])
