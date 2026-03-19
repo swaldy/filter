@@ -11,7 +11,7 @@ directory = "/eos/user/s/swaldych/smart_pix/preprocess_output/"
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-sensor_geom = '100x12P5'
+sensor_geom = '100x25'
 output_file = open(directory+"output"+sensor_geom+".txt", "w")
 
 # for thresh_iter in [0.2]:
