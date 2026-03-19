@@ -7,7 +7,7 @@ import glob
 import sys
 import os
 
-directory = "/eos/user/s/swaldych/smart_pix/preprocess_output"
+directory = "/eos/user/s/swaldych/smart_pix/preprocess_output_diff_noise/"
 if not os.path.exists(directory):
     os.makedirs(directory)
 
