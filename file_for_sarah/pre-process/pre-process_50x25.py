@@ -12,13 +12,13 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 sensor_geom = '50x25'
-noise_thresholdt=800
+noise_thresholdt=1000
 output_file = open(directory+"output_"+sensor_geom+"_"+str(noise_thresholdt)+"NoiseThresh.txt", "w")
 
 # for thresh_iter in [0.2]:
 for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     threshold = thresh_iter
-    noise_threshold = 800
+    noise_threshold = 1000
     print("Producing datasets for thresh = ",thresh_iter,"and noise =", noise_threshold)
     # Global variables
     train_dataset_name = 'dataset_3s' # for train datasets
