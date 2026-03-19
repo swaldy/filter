@@ -12,7 +12,7 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 sensor_geom = '50x25'
-noise_thresholdt=600
+noise_thresholdt=800
 output_file = open(directory+"output_"+sensor_geom+"_"+str(noise_thresholdt)+"NoiseThresh.txt", "w")
 
 # for thresh_iter in [0.2]:
