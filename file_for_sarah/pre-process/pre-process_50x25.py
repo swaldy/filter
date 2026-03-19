@@ -18,7 +18,7 @@ output_file = open(directory+"output_"+sensor_geom+"_"+str(noise_thresholdt)+"No
 # for thresh_iter in [0.2]:
 for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     threshold = thresh_iter
-    noise_threshold = 600
+    noise_threshold = 800
     print("Producing datasets for thresh = ",thresh_iter,"and noise =", noise_threshold)
     # Global variables
     train_dataset_name = 'dataset_3s' # for train datasets
