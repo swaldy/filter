@@ -7,7 +7,7 @@ import pandas as pd
 import glob
 import numpy as np
 
-results_dir = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/results'
+results_dir = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'
 dataset_name = 'dataset_3s'
 f = open(results_dir+'/final_results.txt', "w+")
 f.seek(0)
@@ -22,7 +22,7 @@ for run_iter in range(10):
             sensor_geom = sensor_iter
             print("=============================")
             print("Analyzing run "+str(run_iter)+": Sensor geometry ",sensor_geom," at pT boundary = ",threshold)
-            mergePosNeg = pd.read_csv(dataset_name+"/FullTestData_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv")
+            mergePosNeg = pd.read_csv("/FullTestData_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv")
             
             # True pT distribution (physical no sign)
             h_physical = plt.hist(abs(mergePosNeg['pt']),bins=np.linspace(0,5,51),histtype='stepfilled');
@@ -31,9 +31,9 @@ for run_iter in range(10):
             print("Physical hist content: ",h_physical[0])
             w_physical = h_physical[0]/np.sum(h_physical[0])
             
-            df1 = pd.read_csv('./'+dataset_name+'/TestSetPt_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
-            df2 = pd.read_csv('./'+results_dir+'/predictionsFiles_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
-            df3 = pd.read_csv('./'+results_dir+'/testResults_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
+            df1 = pd.read_csv(results_dir+'/TestSetPt_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df2 = pd.read_csv(results_dir+'results'+'/predictionsFiles_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
+            df3 = pd.read_csv(results_dir+'results'+'/testResults_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
             df2.columns.values[0] = "predict"
             df3.columns.values[0] = "true"
             df2['predict'] = df2['predict'].astype(int)
