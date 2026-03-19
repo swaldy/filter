@@ -7,7 +7,7 @@ import glob
 import sys
 import os
 
-directory = "./"
+directory = "/eos/user/s/swaldych/smart_pix/preprocess_output"
 if not os.path.exists(directory):
     os.makedirs(directory)
 
