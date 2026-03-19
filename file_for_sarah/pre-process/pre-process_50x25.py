@@ -17,9 +17,9 @@ output_file = open(directory+"output"+sensor_geom+".txt", "w")
 # for thresh_iter in [0.2]:
 for thresh_iter in [0.1,0.15,0.2,0.3,0.4,0.5]:
     threshold = thresh_iter
-    print("Producing datasets for thresh = ",thresh_iter)
-    # Global variables
     noise_threshold = 600
+    print("Producing datasets for thresh = ",thresh_iter,"and noise =", noise_threshold)
+    # Global variables
     train_dataset_name = 'dataset_3s' # for train datasets
     test_dataset_name = 'dataset_2s' # for location of test (physical pT) datasets
     # dataset_savedir = 'dataset_9s'
