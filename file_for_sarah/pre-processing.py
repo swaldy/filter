@@ -7,12 +7,12 @@ import glob
 import sys
 import os
 
-directory = "/eos/user/s/swaldych/smart_pix/preprocess_output/"
+directory = "/eos/user/s/swaldych/smart_pix/preprocess_output_diff_noise/"
 if not os.path.exists(directory):
     os.makedirs(directory)
 
 sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
-noise_thresholds = [400, 600, 800, 1000]
+noise_thresholds = [600, 800, 1000]
 
 for sensor_geom in sizes:
     for noise_threshold in noise_thresholds:
