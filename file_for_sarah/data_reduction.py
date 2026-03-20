@@ -22,7 +22,7 @@ for run_iter in range(4):
             sensor_geom = sensor_iter
             print("=============================")
             print("Analyzing run "+str(run_iter)+": Sensor geometry ",sensor_geom," at pT boundary = ",threshold)
-            mergePosNeg = pd.read_csv("/FullTestData_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv")
+            mergePosNeg = pd.read_csv(results_dir+"/FullTestData_"+sensor_geom+"_0P"+str(threshold - int(threshold))[2:]+"thresh.csv")
             
             # True pT distribution (physical no sign)
             h_physical = plt.hist(abs(mergePosNeg['pt']),bins=np.linspace(0,5,51),histtype='stepfilled');
