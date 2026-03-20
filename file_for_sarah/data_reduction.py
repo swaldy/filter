@@ -66,7 +66,7 @@ for run_iter in range(4):
             h_trulyEfficient = plt.hist(abs(concatenate[abs(concatenate['pt'])>2]['pt']),bins=np.linspace(0,5,51),histtype='stepfilled', label='True pT distrib. < 2GeV');
             h_efficiency = plt.hist(abs(concatenate[(abs(concatenate['pt'])>2) & (concatenate['predict']==0)]['pt']),bins=np.linspace(0,5,51), label='Predicted high pT events > 2GeV')
             plt.legend()
-            plt.show()
+            plt.savefig(results_dir+'/data_reduction/'+'sig_eff'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(run_iter)+'.png')
             sig_eff = np.sum(h_efficiency[0]*r)/np.sum(h_trulyEfficient[0]*r)
             Nse = np.sum(h_trulyEfficient[0])
             print("nse = ",Nse)
@@ -77,7 +77,7 @@ for run_iter in range(4):
             h_trulyRejected = plt.hist(abs(concatenate[abs(concatenate['pt'])<2]['pt']),bins=np.linspace(0,5,51),histtype='stepfilled', label='True pT distrib. < 2GeV');
             h_rejected = plt.hist(abs(concatenate[(abs(concatenate['pt'])<2) & (concatenate['predict']>0)]['pt']),bins=np.linspace(0,5,51), label='Predicted high pT events > 2GeV')
             plt.legend()
-            plt.show()
+            plt.savefig(results_dir+'/data_reduction/'+'bkgd_reject'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(run_iter)+'.png')
             bg_rej = np.sum(h_rejected[0]*r)/np.sum(h_trulyRejected[0]*r)
             Nbg = np.sum(h_trulyRejected[0])
             bg_rej_err = np.sqrt(bg_rej*(1-bg_rej)/Nbg)
@@ -87,7 +87,7 @@ for run_iter in range(4):
             h_reduction = plt.hist(abs(concatenate[concatenate['predict']>0]['pt']),bins=np.linspace(0,5,51))
             h_unphysical = plt.hist(abs(concatenate['pt']),bins=np.linspace(0,5,51),histtype='stepfilled')
             plt.legend()
-            plt.show()
+            plt.savefig(results_dir+'/data_reduction/'+'data_reduction'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(run_iter)+'.png')
             dat_red = np.sum(h_reduction[0]*r)/np.sum(h_unphysical[0]*r)
             Ndr = np.sum(h_unphysical[0])
             dat_red_err = np.sqrt(dat_red*(1-dat_red)/Ndr)
