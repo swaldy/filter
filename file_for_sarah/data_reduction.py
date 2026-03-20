@@ -7,7 +7,7 @@ import pandas as pd
 import glob
 import numpy as np
 
-results_dir = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh/'
+results_dir = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh'
 dataset_name = 'dataset_3s'
 f = open(results_dir+'/final_results.txt', "w+")
 f.seek(0)
@@ -32,8 +32,8 @@ for run_iter in range(4):
             w_physical = h_physical[0]/np.sum(h_physical[0])
             
             df1 = pd.read_csv(results_dir+'/TestSetPt_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
-            df2 = pd.read_csv(results_dir+'results'+'/predictionsFiles_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
-            df3 = pd.read_csv(results_dir+'results'+'/testResults_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
+            df2 = pd.read_csv(results_dir+'/results/'+'/predictionsFiles_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
+            df3 = pd.read_csv(results_dir+'/results/'+'/testResults_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_run'+str(run_iter)+'.csv')
             df2.columns.values[0] = "predict"
             df3.columns.values[0] = "true"
             df2['predict'] = df2['predict'].astype(int)
