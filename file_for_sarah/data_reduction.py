@@ -13,7 +13,7 @@ f = open(results_dir+'/final_results.txt', "w+")
 f.seek(0)
 f.truncate()
 # mergePosNeg = pd.concat([big_df_labels, big_df_labels2])
-for run_iter in range(10):
+for run_iter in range(4):
     # for sensor_iter in ['50x12P5_0fb', '50x12P5_370fb', '50x12P5_1100fb', '100x25x150_0fb', '100x25x150_370fb', '100x25x150_1100fb']:
     for sensor_iter in ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']:
         # for thresh_iter in [0.1, 0.125, 0.15, 0.175, 0.2, 0.3, 0.4, 0.5]:
