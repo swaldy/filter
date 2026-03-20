@@ -1,4 +1,5 @@
 import os
+import gc
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,11 +10,14 @@ import tensorflow.keras as keras
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+
 sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
 thresholds = [0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
 prime_num = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
-dataset_name = '/uscms/home/swaldych/nobackup/dataset_3s_400NoiseThresh'
+dataset_name = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh'
 results_dir = os.path.join(dataset_name, 'results')
 models_dir = os.path.join(dataset_name, 'models')
 
@@ -36,12 +40,12 @@ def build_model():
     )
     return model
 
-# preload and scale once
-prepared_data = {}
-
 for sensor_geom in sizes:
     for threshold in thresholds:
         tag = thresh_tag(threshold)
+
+        print("=" * 60)
+        print(f"Loading data once for {sensor_geom}, threshold={threshold}")
 
         X_train = pd.read_csv(
             f'{dataset_name}/FullPrecisionInputTrainSet_{sensor_geom}_{tag}thresh.csv'
@@ -63,18 +67,12 @@ for sensor_geom in sizes:
         X_train = scaler.fit_transform(X_train)
         X_test = scaler.transform(X_test)
 
-        prepared_data[(sensor_geom, threshold)] = (X_train, y_train, X_test, y_test)
-
-for run_iter in range(10):
-    tf.random.set_seed(prime_num[run_iter])
-
-    for sensor_geom in sizes:
-        for threshold in thresholds:
+        for run_iter in range(10):
             print("=" * 30)
             print(f"Run {run_iter}: Training model for {sensor_geom} at pT boundary = {threshold}")
 
-            X_train, y_train, X_test, y_test = prepared_data[(sensor_geom, threshold)]
-            tag = thresh_tag(threshold)
+            tf.keras.backend.clear_session()
+            tf.random.set_seed(prime_num[run_iter])
 
             model = build_model()
 
@@ -96,8 +94,8 @@ for run_iter in range(10):
                 verbose=0
             )
 
-            # loss plot
             epochs = range(1, len(history.history['loss']) + 1)
+
             plt.figure()
             plt.plot(epochs, history.history['loss'], 'bo', label='Training loss')
             plt.plot(epochs, history.history['val_loss'], 'orange', label='Validation loss')
@@ -108,7 +106,6 @@ for run_iter in range(10):
             plt.savefig(f'{results_dir}/loss_{sensor_geom}_{tag}thresh_run{run_iter}.png')
             plt.close()
 
-            # accuracy plot
             plt.figure()
             plt.plot(epochs, history.history['sparse_categorical_accuracy'], 'bo', label='Training accuracy')
             plt.plot(epochs, history.history['val_sparse_categorical_accuracy'], 'orange', label='Validation accuracy')
@@ -145,6 +142,13 @@ for run_iter in range(10):
             disp.figure_.suptitle("Multiclassifier Confusion Matrix")
             plt.savefig(f'{results_dir}/confusionMatrix_{sensor_geom}_{tag}_run{run_iter}.png')
             plt.close()
-
+            print(f"Confusion matrix:\n{disp.confusion_matrix}")
             model.save_weights(f'{models_dir}/trained_model_{sensor_geom}_{tag}_run{run_iter}.weights.h5')
             model.save(f'{models_dir}/trained_model_{sensor_geom}_{tag}_run{run_iter}.h5')
+
+            del model, history, preds, predictionsFiles, disp, score
+            gc.collect()
+            tf.keras.backend.clear_session()
+
+        del X_train, y_train, X_test, y_test, scaler
+        gc.collect()
