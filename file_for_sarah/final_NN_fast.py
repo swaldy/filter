@@ -145,6 +145,7 @@ for run_iter in range(10):
             disp.figure_.suptitle("Multiclassifier Confusion Matrix")
             plt.savefig(f'{results_dir}/confusionMatrix_{sensor_geom}_{tag}_run{run_iter}.png')
             plt.close()
+            print(f"Confusion matrix:\n{disp.confusion_matrix}")
 
             model.save_weights(f'{models_dir}/trained_model_{sensor_geom}_{tag}_run{run_iter}.weights.h5')
             model.save(f'{models_dir}/trained_model_{sensor_geom}_{tag}_run{run_iter}.h5')
