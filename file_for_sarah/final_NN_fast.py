@@ -44,28 +44,24 @@ for sensor_geom in sizes:
         tag = thresh_tag(threshold)
 
         X_train = pd.read_csv(
-            f'{dataset_name}/FullPrecisionInputTrainSet_{sensor_geom}_{tag}thresh.csv',
-            dtype=np.float32
+            f'{dataset_name}/FullPrecisionInputTrainSet_{sensor_geom}_{tag}thresh.csv'
         ).to_numpy()
 
         y_train = pd.read_csv(
-            f'{dataset_name}/TrainSetLabel_{sensor_geom}_{tag}thresh.csv',
-            dtype=np.int32
+            f'{dataset_name}/TrainSetLabel_{sensor_geom}_{tag}thresh.csv'
         ).to_numpy().ravel()
 
         X_test = pd.read_csv(
-            f'{dataset_name}/FullPrecisionInputTestSet_{sensor_geom}_{tag}thresh.csv',
-            dtype=np.float32
+            f'{dataset_name}/FullPrecisionInputTestSet_{sensor_geom}_{tag}thresh.csv'
         ).to_numpy()
 
         y_test = pd.read_csv(
-            f'{dataset_name}/TestSetLabel_{sensor_geom}_{tag}thresh.csv',
-            dtype=np.int32
+            f'{dataset_name}/TestSetLabel_{sensor_geom}_{tag}thresh.csv'
         ).to_numpy().ravel()
 
         scaler = StandardScaler()
-        X_train = scaler.fit_transform(X_train).astype(np.float32)
-        X_test = scaler.transform(X_test).astype(np.float32)
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
 
         prepared_data[(sensor_geom, threshold)] = (X_train, y_train, X_test, y_test)
 
