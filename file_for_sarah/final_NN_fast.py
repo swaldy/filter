@@ -13,7 +13,7 @@ sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
 thresholds = [0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
 prime_num = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
-dataset_name = '/eos/user/s/swaldych/smart_pix/dataset_3s_400NoiseThresh'
+dataset_name = '/uscms/home/swaldych/nobackup/dataset_3s_400NoiseThresh'
 results_dir = os.path.join(dataset_name, 'results')
 models_dir = os.path.join(dataset_name, 'models')
 
