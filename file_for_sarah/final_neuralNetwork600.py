@@ -79,7 +79,7 @@ for run_iter in range(10):
                                 batch_size=1024,
                                 validation_split=0.2,
                                 shuffle=True,
-                                verbose=1)
+                                verbose=2)
             
             history_dict = history.history
             loss_values = history_dict['loss'] 
