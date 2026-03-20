@@ -26,6 +26,7 @@ sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
 # dataset_name = 'dataset_7s'
 # results_dir = 'results_7s'
 # models_dir = 'models_7s'
+noise_threshold=600
 dataset_name = '/eos/user/s/swaldych/smart_pix/dataset_3s_600NoiseThresh'
 results_dir = 'results'
 models_dir = 'models'
@@ -37,14 +38,14 @@ for run_iter in range(10):
             tf.random.set_seed(prime_num[run_iter])
             sensor_geom = size_iter
             print("=============================")
-            print("Run "+str(run_iter)+": Training model for ",sensor_geom," at pT boundary = ",threshold)
-            df1 = pd.read_csv(dataset_name+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            print("Run "+str(run_iter)+": Training model for",sensor_geom," at pT boundary = ",threshold,"with noise=",noise_threshold)
+            df1 = pd.read_csv(dataset_name+'/FullPrecisionInputTrainSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(noise_threshold)+'NoiseThresh.csv')
             print("Shape of train dataset = ",df1.shape)
-            df2 = pd.read_csv(dataset_name+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df2 = pd.read_csv(dataset_name+'/TrainSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(noise_threshold)+'NoiseThresh.csv')
             print("Shape of train-label set = ",df2.shape)
-            df3 = pd.read_csv(dataset_name+'/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df3 = pd.read_csv(dataset_name+'/FullPrecisionInputTestSet_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(noise_threshold)+'NoiseThresh.csv')
             print("Shape of test dataset = ",df3.shape)
-            df4 = pd.read_csv(dataset_name+'/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh.csv')
+            df4 = pd.read_csv(dataset_name+'/TestSetLabel_'+sensor_geom+'_0P'+str(threshold - int(threshold))[2:]+'thresh_'+str(noise_threshold)+'NoiseThresh.csv')
             print("Shape of test-label set = ",df4.shape)
             X_train = df1.values
             X_test = df3.values
