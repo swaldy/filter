@@ -93,7 +93,7 @@ for run_iter in range(4):
             dat_red_err = np.sqrt(dat_red*(1-dat_red)/Ndr)
             print("Data reduction = {:.2f}%".format(100*np.sum(h_reduction[0]*r)/np.sum(h_unphysical[0]*r)))
             
-            with open(results_dir+'/final_results.txt', 'a') as file:
+            with open(results_dir+'/results'+'/final_results.txt', 'a') as file:
                 file.write(sensor_geom+','+str(threshold)+','+str(run_iter)+','+str(sig_eff)+','+str(sig_eff_err)+','+str(bg_rej)+','+str(bg_rej_err)+','+ str(dat_red)+','+str(dat_red_err)+'\n')
 
 print("======================")
