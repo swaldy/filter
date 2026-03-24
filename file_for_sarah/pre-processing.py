@@ -12,10 +12,9 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 sizes = ['50x10', '50x12P5', '50x15', '50x20', '50x25', '100x25', '100x25x150']
-noise_thresholds = [600, 800, 1000]
+noise_threshold = 0
 
 for sensor_geom in sizes:
-    for noise_threshold in noise_thresholds:
         output_file = open(directory+"output_"+sensor_geom+"_"+str(noise_threshold)+"NoiseThresh.txt", "w")
 
         # for thresh_iter in [0.2]:
